@@ -1,4 +1,4 @@
-# $libshrink$
+# $shrink$
 
 PROG= shrink
 #MAN= shrink.8

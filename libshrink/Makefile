@@ -1,4 +1,4 @@
-# $libshrink$
+# $shrink$
 
 PREFIX?=/usr/local
 BINDIR=${DESTDIR}${PREFIX}/bin

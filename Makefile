@@ -1,4 +1,4 @@
-# $epitome2: Makefile,v 1.5 2010/09/21 20:36:29 marco Exp $
+# $shrink$
 
 .include <bsd.own.mk>
 
