@@ -35,8 +35,15 @@ int	(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
 int	(*s_decompress)(u_int8_t *, u_int8_t *, size_t, size_t *,
 	    struct timeval *);
 void	*(*s_malloc)(size_t *);
+size_t	(*s_compress_bounds)(size_t);
 
 /* null compression */
+size_t
+s_compress_bounds_null(size_t sz)
+{
+	return (sz);
+}
+
 void *
 s_malloc_null(size_t *sz)
 {
@@ -134,6 +141,12 @@ static lzo_uint32	s_lzo1x_heapsz;
 static int		(*s_lzo1x_compress)(const lzo_bytep, lzo_uint,
 			    lzo_bytep, lzo_uintp, lzo_voidp);
 
+size_t
+s_compress_bounds_lzo(size_t sz)
+{
+	return (LZO_SIZE(sz));
+}
+
 void *
 s_malloc_lzo(size_t *sz)
 {
@@ -211,6 +224,12 @@ s_decompress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 }
 
 /* LZW */
+size_t
+s_compress_bounds_lzw(size_t sz)
+{
+	return (compressBound(sz));
+}
+
 void *
 s_malloc_lzw(size_t *sz)
 {
@@ -290,6 +309,12 @@ s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 /* LZMA */
 /* XXX pulled out of my butt */
 #define LZMA_SIZE(s)	(s + (lzma_block_buffer_bound(s) - s) * 2)
+
+size_t
+s_compress_bounds_lzma(size_t sz)
+{
+	return (LZMA_SIZE(sz));
+}
 
 void *
 s_malloc_lzma(size_t *sz)
@@ -413,6 +438,7 @@ s_init(int algorithm, int level)
 		s_compress = s_compress_null;
 		s_decompress = s_decompress_null;
 		s_malloc = s_malloc_null;
+		s_compress_bounds = s_compress_bounds_null;
 		s_level = level;
 		break;
 	case S_ALG_LZO:
@@ -442,6 +468,7 @@ s_init(int algorithm, int level)
 		s_decompress = s_decompress_lzo;
 		s_malloc = s_malloc_lzo;
 		s_level = level;
+		s_compress_bounds = s_compress_bounds_lzo;
 		break;
 	case S_ALG_LZW:
 		switch (level) {
@@ -464,6 +491,7 @@ s_init(int algorithm, int level)
 		s_compress = s_compress_lzw;
 		s_decompress = s_decompress_lzw;
 		s_malloc = s_malloc_lzw;
+		s_compress_bounds = s_compress_bounds_lzw;
 		break;
 	case S_ALG_LZMA:
 		switch (level) {
@@ -486,6 +514,7 @@ s_init(int algorithm, int level)
 		s_compress = s_compress_lzma;
 		s_decompress = s_decompress_lzma;
 		s_malloc = s_malloc_lzma;
+		s_compress_bounds = s_compress_bounds_lzma;
 		s_level = level;
 		break;
 	default:

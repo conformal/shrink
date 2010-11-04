@@ -132,6 +132,7 @@ test_run(int algo, int level)
 	}
 
 	printf           ("algorithm                    : %12s\n", s_algorithm);
+	printf           ("compression bounds           : %12zd\n",s_compress_bounds(bs));
 	print_size       ("data size                    : ", bs * count);
 	print_size       ("size compressed              : ", tot_comp_sz);
 	print_time_scaled("compression                  : ", &tot_comp);

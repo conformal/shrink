@@ -35,22 +35,7 @@
 #define S_L_MID		(2)
 #define S_L_MAX		(3)
 
-#if 0
 /* XXX do we want to expose the internal API? */
-/* null compression */
-int			s_compress_null(u_int8_t *, u_int8_t *, size_t,
-			    size_t *, struct timeval *);
-int			s_decompress_null(u_int8_t *, u_int8_t *, size_t,
-			    size_t *, struct timeval *);
-void			*s_malloc_null(size_t *);
-
-/* lzo compression */
-int			s_compress_lzo999(u_int8_t *, u_int8_t *, size_t,
-			    size_t *, struct timeval *);
-int			s_decompress_lzo999(u_int8_t *, u_int8_t *, size_t,
-			    size_t *, struct timeval *);
-void			*s_malloc_lzo999(size_t *);
-#endif
 
 /* pretty api */
 extern int		(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
@@ -58,6 +43,7 @@ extern int		(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
 extern int		(*s_decompress)(u_int8_t *, u_int8_t *, size_t,
 			    size_t *, struct timeval *);
 extern void		*(*s_malloc)(size_t *);
+extern size_t		(*s_compress_bounds)(size_t);
 extern char		*s_algorithm;
 
 int			s_init(int algorithm, int level);
