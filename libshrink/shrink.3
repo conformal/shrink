@@ -1,0 +1,169 @@
+.\" $shrink$
+.\"
+.\" Copyright (c) 2010 Marco Peereboom <marco@conformal.com>
+.\" Copyright (c) 2010 Conformal LLC. <info@conformal.com>
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate$
+.Dt SHRINK 3
+.Os
+.Sh NAME
+.Nm shrink
+.Nd compression wrapper
+.Sh SYNOPSIS
+.Fd #include <shrink.h>
+.Ft int
+.Fn s_init "int algorithm" "int level"
+.Ft size_t
+.Fn s_compress_bounds "size_t blocksize"
+.Ft void *
+.Fn s_malloc "size_t blocksize"
+.Ft int
+.Fn s_compress "u_int8_t *src" "u_int8_t *dst" "size_t slen" "size_t *comp_sz" "struct timeval *elapsed"
+.Ft int
+.Fn s_decompress "u_int8_t *src" "u_int8_t *dst" "size_t slen" "size_t *uncomp_sz" "struct timeval *elapsed"
+.Sh DESCRIPTION
+The
+.Nm
+library provides a single API into several compression algorithms.
+It enables developers to easily add compression and decompression functionality
+to an existing code base.
+.Pp
+.Fn s_init
+prepares the library for first use.
+This function shall be called before any other function is called.
+.Pp
+The
+.Fa algorithm
+parameter delineates which compression algorithm to use.
+The following algorithms are available:
+.Bl -tag -width "S_ALG_NULL" -offset indent -compact
+.It Cm S_ALG_NULL
+Do not attempt to compress data.
+Simple use
+.Xr bcopy 3
+as the transformation algorithm.
+.It Cm S_ALG_LZO
+Use the LZO algorithm.
+LZO is optimized for speed at a compression cost.
+It typically compresses ~10% less than LZW or LZMA.
+Note: LZO is not standardized.
+.It Cm S_ALG_LZW
+LZW is the most widely used algorithm.
+It provides higher compression than LZO but can be quite a bit slower.
+The algorithm is widely adopted and the output is standardized.
+.It Cm S_ALG_LZMA
+LZMA is considered the best compression algorithm however it is significantly
+slower than LZO or even LZW.
+It is also heavier on resources than the other two algorithms.
+.El
+.Pp
+There is no one answer to help one pick a compression algorithm.
+Please use the accompanied
+.Nm
+binary to get an idea how the algorithms perform in the best and worst case
+scenarios.
+.Pp
+.Fn s_compress_bounds
+is a helper function to help determine how much memory a compressed
+(destination) buffer might require.
+This value can be higher than the source buffer size for incompressible data.
+The function will return a value based on the
+.Fa blocksize
+parameter.
+.Pp
+.Fn s_malloc
+is identical to the
+.Xr malloc 3
+call but it handles the
+.Fn s_compress_bounds
+sizes automatically.
+This means that the allocated buffer is larger than the requested size.
+.Pp
+.Fn s_compress
+compresses
+.Fa src
+buffer into
+.Fa dst
+buffer.
+The
+.Fa slen
+parameter holds the
+.Fa src
+buffer size.
+Prior to calling
+.Fn s_compress
+the
+.Fa comp_sz
+parameter must be set to the maximum compressible
+.Fa blocksize .
+This
+.Fa blocksize
+can be determined by calling
+.Fn s_compress_bounds .
+.Pp
+On success the function returns
+.Fa S_OK
+and comp_sz holds the actual compressed size of the buffer.
+.Pp
+Additionally if
+.Fa elapsed
+is set it will return a
+.Fa struct timeval
+that contains the time it took to compress the
+.Fa src
+buffer.
+.Pp
+.Fn s_decompress
+is analogous to
+.Fn s_compress .
+It decompresses
+.Fa src
+into
+.Fa dst.
+The
+.Fa slen
+parameter holds the size of the
+.Fa src
+buffer.
+Prior to calling
+.Fn s_decompress
+the
+.Fa uncomp_sz
+parameter must be set to the maximum
+.Fa dst
+size.
+.Pp
+Additionally if
+.Fa elapsed
+is set it will return a
+.Fa struct timeval
+that contains the time it took to decompress the
+.Fa src
+buffer.
+.Pp
+.Sh SEE ALSO
+This library wraps the following excellent open source libraries:
+.Bl -tag -width "S_ALG_NULL" -offset indent -compact
+.It Cm http://www.oberhumer.com/opensource/lzo/
+.It Cm http://www.zlib.net/
+.It Cm http://tukaani.org/xz/
+.El
+.Sh HISTORY
+.An -nosplit
+.Nm
+was written by
+.An Marco Peereboom Aq marco@conformal.com
+in order to have a single API while testing several different compression
+algorithms.

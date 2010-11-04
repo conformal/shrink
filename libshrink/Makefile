@@ -14,7 +14,7 @@ CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
 CPPFLAGS+=-I${.CURDIR} -I/usr/local/include
 
-NOMAN= 
+MAN=  shrink.3
 HDRS= shrink.h
 
 afterinstall:
