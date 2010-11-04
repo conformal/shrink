@@ -105,9 +105,10 @@ test_run(int algo, int level)
 			memset(s, i, bs);
 
 		/* compress */
-		comp_sz = bs;
+		comp_sz = dsz;
 		if (s_compress(s, d, bs, &comp_sz, &elapsed)) {
 			warnx("s_compress failed");
+			errx(1, "boing");
 			restart = 1;
 		}
 		timeradd(&elapsed, &tot_comp, &tot_comp);
@@ -152,7 +153,7 @@ main(int argc, char *argv[])
 		switch (c) {
 		case 'b': /* block size */
 			bs = atoi(optarg);
-			if (bs <= 0 || bs > 512 * 1024 * 1024)
+			if (bs <= 0 || bs > 1024 * 1024 * 1024)
 				errx(1, "invalid block size");
 			break;
 		case 'c': /* count */
@@ -181,6 +182,12 @@ main(int argc, char *argv[])
 	test_run(S_ALG_LZW, S_L_MID);
 	printf("\n");
 	test_run(S_ALG_LZW, S_L_MAX);
+	printf("\n");
+	test_run(S_ALG_LZMA, S_L_MIN);
+	printf("\n");
+	test_run(S_ALG_LZMA, S_L_MID);
+	printf("\n");
+	test_run(S_ALG_LZMA, S_L_MAX);
 
 	return (0);
 }

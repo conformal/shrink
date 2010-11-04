@@ -24,6 +24,8 @@
 
 #include<zlib.h>
 
+#include <lzma.h>
+
 #include <shrink.h>
 
 char	*s_algorithm;
@@ -209,22 +211,42 @@ s_decompress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 }
 
 /* LZW */
+void *
+s_malloc_lzw(size_t *sz)
+{
+	void			*p;
+	size_t			real_sz;
+
+	if (sz == NULL)
+		return (NULL);
+
+	real_sz = compressBound(*sz);
+	p = malloc(real_sz);
+	if (p == NULL)
+		return (NULL);
+
+	*sz = real_sz;
+	return (p);
+
+}
+
 int
 s_compress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
+	int			r;
 
 	/* sanity */
 	if (comp_sz == NULL)
 		return (S_INTEGRITY);
-	if (*comp_sz < len)
+	if (compressBound(*comp_sz) < len)
 		return (S_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
-	if (compress2(dst, comp_sz, src, len, s_level) != Z_OK)
+	if ((r = compress2(dst, comp_sz, src, len, s_level)) != Z_OK)
 		return (S_LIB_COMPRESS);
 
 	if (elapsed) {
@@ -246,7 +268,7 @@ s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 	if (uncomp_sz == NULL)
 		return (S_INTEGRITY);
 	/* allow for incompressible margin */
-	if (LZO_SIZE(*uncomp_sz) < len) {
+	if (compressBound(*uncomp_sz) < len) {
 		return (S_INTEGRITY);
 	}
 
@@ -266,6 +288,117 @@ s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 }
 
 /* LZMA */
+/* XXX pulled out of my butt */
+#define LZMA_SIZE(s)	(s + (lzma_block_buffer_bound(s) - s) * 2)
+
+void *
+s_malloc_lzma(size_t *sz)
+{
+	void			*p;
+	size_t			real_sz;
+
+	if (sz == NULL)
+		return (NULL);
+
+	real_sz = LZMA_SIZE(*sz);
+	p = malloc(real_sz);
+	if (p == NULL)
+		return (NULL);
+
+	*sz = real_sz;
+	return (p);
+
+}
+
+int
+s_compress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+    struct timeval *elapsed)
+{
+	struct timeval		end, start;
+	lzma_stream		lzma = LZMA_STREAM_INIT;
+	int			r;
+
+	/* sanity */
+	if (comp_sz == NULL)
+		return (S_INTEGRITY);
+	if (*comp_sz < len)
+		return (S_INTEGRITY);
+
+	if (elapsed && gettimeofday(&start, NULL) == -1)
+		return (S_LIBC);
+
+	lzma.next_in = src;
+	lzma.next_out = dst;
+	lzma.avail_in = len;
+	lzma.avail_out = *comp_sz;
+	if (lzma_easy_encoder(&lzma, s_level, LZMA_CHECK_CRC32) != LZMA_OK) {
+		lzma_end(&lzma);
+		return (S_LIB_COMPRESS);
+	}
+	if (lzma_code(&lzma, LZMA_RUN) != LZMA_OK) {
+		lzma_end(&lzma);
+		return (S_LIB_COMPRESS);
+	}
+	r = lzma_code(&lzma, LZMA_FINISH);
+	if (r !=LZMA_STREAM_END && r != LZMA_OK) {
+		lzma_end(&lzma);
+		return (S_LIB_COMPRESS);
+	}
+	*comp_sz = lzma.total_out;
+	lzma_end(&lzma);
+
+	if (elapsed) {
+		if (gettimeofday(&end, NULL) == -1)
+			return (S_LIBC);
+		timersub(&end, &start, elapsed);
+	}
+
+	return (S_OK);
+}
+
+int
+s_decompress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+    struct timeval *elapsed)
+{
+	struct timeval		end, start;
+	lzma_stream		lzma = LZMA_STREAM_INIT;
+	int			r;
+
+	/* sanity */
+	if (uncomp_sz == NULL)
+		return (S_INTEGRITY);
+	if (LZMA_SIZE(*uncomp_sz) < len) {
+		return (S_INTEGRITY);
+	}
+
+	if (elapsed && gettimeofday(&start, NULL) == -1)
+		return (S_LIBC);
+
+	lzma.next_in = src;
+	lzma.next_out = dst;
+	lzma.avail_in = len;
+	lzma.avail_out = *uncomp_sz;
+	if ((r = lzma_auto_decoder(&lzma, lzma_easy_decoder_memusage(s_level),
+	    0)) != LZMA_OK) {
+		lzma_end(&lzma);
+		return (S_LIB_COMPRESS);
+	}
+	r = lzma_code(&lzma, LZMA_RUN);
+	if (r != LZMA_STREAM_END) {
+		lzma_end(&lzma);
+		return (S_LIB_COMPRESS);
+	}
+	*uncomp_sz = lzma.total_out;
+	lzma_end(&lzma);
+
+	if (elapsed) {
+		if (gettimeofday(&end, NULL) == -1)
+			return (S_LIBC);
+		timersub(&end, &start, elapsed);
+	}
+
+	return (S_OK);
+}
 
 /* init */
 int
@@ -330,7 +463,30 @@ s_init(int algorithm, int level)
 		}
 		s_compress = s_compress_lzw;
 		s_decompress = s_decompress_lzw;
-		s_malloc = s_malloc_null; /* reuse null malloc */
+		s_malloc = s_malloc_lzw;
+		break;
+	case S_ALG_LZMA:
+		switch (level) {
+		case S_L_MIN:
+			s_algorithm = "lzma_0";
+			s_level = 0;
+			break;
+		case S_L_MID:
+			s_algorithm = "lzma_6";
+			s_level = 5;
+			break;
+		case S_L_MAX:
+			s_algorithm = "lzma_9";
+			s_level = 9;
+			break;
+		case S_L_NONE:
+		default:
+			return (S_INVALID);
+		}
+		s_compress = s_compress_lzma;
+		s_decompress = s_decompress_lzma;
+		s_malloc = s_malloc_lzma;
+		s_level = level;
 		break;
 	default:
 		return (S_INVALID);

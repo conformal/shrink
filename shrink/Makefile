@@ -17,7 +17,7 @@ SRCS= shrink.c
 COPT+= -O2
 DEBUG+= -ggdb3
 CFLAGS+= -Wall -Werror
-LDFLAGS+= -L${LIBDIR} -L/usr/local/lib -l shrink -lutil -llzo2 -lz
+LDFLAGS+= -L${LIBDIR} -L/usr/local/lib -l shrink -lutil -llzo2 -lz -llzma
 
 CFLAGS+= -I${.CURDIR}/../libshrink -I.
 
