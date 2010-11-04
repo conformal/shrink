@@ -79,7 +79,7 @@ test_run(int algo, int level)
 	u_int8_t		*s = NULL, *d = NULL, *uncomp = NULL;
 	size_t			tot_comp_sz = 0, tot_uncomp_sz = 0, dsz;
 	size_t			uncomp_sz, comp_sz;
-	int			i;
+	int			i, restart = 0;
 
 	timerclear(&tot_comp);
 	timerclear(&tot_uncomp);
@@ -106,10 +106,17 @@ test_run(int algo, int level)
 
 		/* compress */
 		comp_sz = bs;
-		if (s_compress(s, d, bs, &comp_sz, &elapsed))
-			errx(1, "s_compress");
+		if (s_compress(s, d, bs, &comp_sz, &elapsed)) {
+			warnx("s_compress failed");
+			restart = 1;
+		}
 		timeradd(&elapsed, &tot_comp, &tot_comp);
 		tot_comp_sz += comp_sz;
+
+		if (restart) {
+			restart = 0;
+			continue;
+		}
 
 		/* decompress */
 		uncomp_sz = bs;
@@ -168,6 +175,12 @@ main(int argc, char *argv[])
 	test_run(S_ALG_LZO, S_L_MID);
 	printf("\n");
 	test_run(S_ALG_LZO, S_L_MAX);
+	printf("\n");
+	test_run(S_ALG_LZW, S_L_MIN);
+	printf("\n");
+	test_run(S_ALG_LZW, S_L_MID);
+	printf("\n");
+	test_run(S_ALG_LZW, S_L_MAX);
 
 	return (0);
 }

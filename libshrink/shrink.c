@@ -22,6 +22,8 @@
 #include <lzo/lzoconf.h>
 #include <lzo/lzo1x.h>
 
+#include<zlib.h>
+
 #include <shrink.h>
 
 char	*s_algorithm;
@@ -205,7 +207,63 @@ s_decompress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 
 	return (S_OK);
 }
+
 /* LZW */
+int
+s_compress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+    struct timeval *elapsed)
+{
+	struct timeval		end, start;
+
+	/* sanity */
+	if (comp_sz == NULL)
+		return (S_INTEGRITY);
+	if (*comp_sz < len)
+		return (S_INTEGRITY);
+
+	if (elapsed && gettimeofday(&start, NULL) == -1)
+		return (S_LIBC);
+
+	if (compress2(dst, comp_sz, src, len, s_level) != Z_OK)
+		return (S_LIB_COMPRESS);
+
+	if (elapsed) {
+		if (gettimeofday(&end, NULL) == -1)
+			return (S_LIBC);
+		timersub(&end, &start, elapsed);
+	}
+
+	return (S_OK);
+}
+
+int
+s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+    struct timeval *elapsed)
+{
+	struct timeval		end, start;
+
+	/* sanity */
+	if (uncomp_sz == NULL)
+		return (S_INTEGRITY);
+	/* allow for incompressible margin */
+	if (LZO_SIZE(*uncomp_sz) < len) {
+		return (S_INTEGRITY);
+	}
+
+	if (elapsed && gettimeofday(&start, NULL) == -1)
+		return (S_LIBC);
+
+	if (uncompress(dst, uncomp_sz, src, len) != Z_OK)
+		return (S_LIB_COMPRESS);
+
+	if (elapsed) {
+		if (gettimeofday(&end, NULL) == -1)
+			return (S_LIBC);
+		timersub(&end, &start, elapsed);
+	}
+
+	return (S_OK);
+}
 
 /* LZMA */
 
@@ -251,6 +309,28 @@ s_init(int algorithm, int level)
 		s_decompress = s_decompress_lzo;
 		s_malloc = s_malloc_lzo;
 		s_level = level;
+		break;
+	case S_ALG_LZW:
+		switch (level) {
+		case S_L_MIN:
+			s_algorithm = "lzw_1";
+			s_level = 1;
+			break;
+		case S_L_MID:
+			s_algorithm = "lzw_6";
+			s_level = 6; /* default */
+			break;
+		case S_L_MAX:
+			s_algorithm = "lzw_9";
+			s_level = 9;
+			break;
+		case S_L_NONE:
+		default:
+			return (S_INVALID);
+		}
+		s_compress = s_compress_lzw;
+		s_decompress = s_decompress_lzw;
+		s_malloc = s_malloc_null; /* reuse null malloc */
 		break;
 	default:
 		return (S_INVALID);
