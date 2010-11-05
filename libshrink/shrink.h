@@ -17,7 +17,6 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #define S_OK		(0)
 #define S_INTEGRITY	(1)
@@ -38,9 +37,9 @@
 /* XXX do we want to expose the internal API? */
 
 /* pretty api */
-extern int		(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
+extern int		(*s_compress)(uint8_t *, uint8_t *, size_t, size_t *,
 			    struct timeval *);
-extern int		(*s_decompress)(u_int8_t *, u_int8_t *, size_t,
+extern int		(*s_decompress)(uint8_t *, uint8_t *, size_t,
 			    size_t *, struct timeval *);
 extern void		*(*s_malloc)(size_t *);
 extern size_t		(*s_compress_bounds)(size_t);

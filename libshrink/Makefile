@@ -13,6 +13,7 @@ CFLAGS+= -fdiagnostics-show-option
 CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
 CPPFLAGS+=-I${.CURDIR} -I/usr/local/include
+LDADD+=-L${PREFIX}/lib
 
 MAN=  shrink.3
 HDRS= shrink.h
@@ -26,3 +27,19 @@ afterinstall:
 
 .include <bsd.own.mk>
 .include <bsd.lib.mk>
+
+# must be after Makefile.inc is included
+.if defined(SUPPORT_LZW)
+CFLAGS += -DSUPPORT_LZW
+LDADD+=-lz
+.endif
+
+.if defined(SUPPORT_LZO2)
+CFLAGS += -DSUPPORT_LZO2
+LDADD+=-llzo2
+.endif
+
+.if defined(SUPPORT_LZMA)
+CFLAGS += -DSUPPORT_LZMA
+LDADD+=-llzma
+.endif

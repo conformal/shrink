@@ -76,7 +76,7 @@ void
 test_run(int algo, int level)
 {
 	struct timeval		elapsed, tot_comp, tot_uncomp;
-	u_int8_t		*s = NULL, *d = NULL, *uncomp = NULL;
+	uint8_t			*s = NULL, *d = NULL, *uncomp = NULL;
 	size_t			tot_comp_sz = 0, tot_uncomp_sz = 0, dsz;
 	size_t			uncomp_sz, comp_sz;
 	int			i, restart = 0;
@@ -84,8 +84,10 @@ test_run(int algo, int level)
 	timerclear(&tot_comp);
 	timerclear(&tot_uncomp);
 
-	if (s_init(algo, level))
-		errx(1, "s_init");
+	if (s_init(algo, level)) {
+		warnx("s_init algorithm %d not supported", algo);
+		return;
+	}
 
 	s = malloc(bs);
 	if (s == NULL)

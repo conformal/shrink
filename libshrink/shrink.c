@@ -19,12 +19,18 @@
 #include <string.h>
 #include <sys/time.h>
 
+#if defined(SUPPORT_LZO2)
 #include <lzo/lzoconf.h>
 #include <lzo/lzo1x.h>
+#endif /* SUPPORT LZO2 */
 
+#if defined(SUPPORT_LZW)
 #include<zlib.h>
+#endif /* SUPPORT LZW */
 
+#if defined(SUPPORT_LZMA)
 #include <lzma.h>
+#endif /* SUPPORT LZMA */
 
 #include <shrink.h>
 
@@ -32,9 +38,9 @@ __attribute__((unused)) static const char *cvstag = "$shrink$";
 
 char	*s_algorithm;
 int	s_level;
-int	(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
+int	(*s_compress)(uint8_t *, uint8_t *, size_t, size_t *,
 	    struct timeval *);
-int	(*s_decompress)(u_int8_t *, u_int8_t *, size_t, size_t *,
+int	(*s_decompress)(uint8_t *, uint8_t *, size_t, size_t *,
 	    struct timeval *);
 void	*(*s_malloc)(size_t *);
 size_t	(*s_compress_bounds)(size_t);
@@ -56,7 +62,7 @@ s_malloc_null(size_t *sz)
 }
 
 int
-s_compress_null(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+s_compress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -84,7 +90,7 @@ s_compress_null(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
 }
 
 int
-s_decompress_null(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+s_decompress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -111,6 +117,7 @@ s_decompress_null(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 	return (S_OK);
 }
 
+#if defined(SUPPORT_LZO2)
 /* LZO */
 #define HEAP_ALLOC(var,size) \
     lzo_align_t __LZO_MMODEL var [ ((size) + (sizeof(lzo_align_t) - 1)) / sizeof(lzo_align_t) ]
@@ -169,7 +176,7 @@ s_malloc_lzo(size_t *sz)
 }
 
 int
-s_compress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -197,7 +204,7 @@ s_compress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
 }
 
 int
-s_decompress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+s_decompress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -224,7 +231,9 @@ s_decompress_lzo(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 
 	return (S_OK);
 }
+#endif /* SUPPORT_LZO2 */
 
+#if defined(SUPPORT_LZW)
 /* LZW */
 size_t
 s_compress_bounds_lzw(size_t sz)
@@ -252,7 +261,7 @@ s_malloc_lzw(size_t *sz)
 }
 
 int
-s_compress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+s_compress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -280,7 +289,7 @@ s_compress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
 }
 
 int
-s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+s_decompress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -307,7 +316,9 @@ s_decompress_lzw(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 
 	return (S_OK);
 }
+#endif /* SUPPORT_LZW */
 
+#if defined(SUPPORT_LZMA)
 /* LZMA */
 /* XXX pulled out of my butt */
 #define LZMA_SIZE(s)	(s + (lzma_block_buffer_bound(s) - s) * 2)
@@ -338,7 +349,7 @@ s_malloc_lzma(size_t *sz)
 }
 
 int
-s_compress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
+s_compress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -384,7 +395,7 @@ s_compress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *comp_sz,
 }
 
 int
-s_decompress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
+s_decompress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
     struct timeval *elapsed)
 {
 	struct timeval		end, start;
@@ -426,6 +437,7 @@ s_decompress_lzma(u_int8_t *src, u_int8_t *dst, size_t len, size_t *uncomp_sz,
 
 	return (S_OK);
 }
+#endif /* SUPPORT_LZMA */
 
 /* init */
 int
@@ -443,6 +455,7 @@ s_init(int algorithm, int level)
 		s_compress_bounds = s_compress_bounds_null;
 		s_level = level;
 		break;
+#if defined(SUPPORT_LZO2)
 	case S_ALG_LZO:
 		if (lzo_init() != LZO_E_OK)
 			return (S_LIB_COMPRESS);
@@ -472,6 +485,8 @@ s_init(int algorithm, int level)
 		s_level = level;
 		s_compress_bounds = s_compress_bounds_lzo;
 		break;
+#endif /* SUPPORT_LZO2 */
+#if defined(SUPPORT_LZW)
 	case S_ALG_LZW:
 		switch (level) {
 		case S_L_MIN:
@@ -495,6 +510,8 @@ s_init(int algorithm, int level)
 		s_malloc = s_malloc_lzw;
 		s_compress_bounds = s_compress_bounds_lzw;
 		break;
+#endif /* SUPPORT_LZW */
+#if defined(SUPPORT_LZMA)
 	case S_ALG_LZMA:
 		switch (level) {
 		case S_L_MIN:
@@ -519,6 +536,7 @@ s_init(int algorithm, int level)
 		s_compress_bounds = s_compress_bounds_lzma;
 		s_level = level;
 		break;
+#endif /* SUPPORT_LZMA */
 	default:
 		return (S_INVALID);
 	}
