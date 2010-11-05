@@ -28,7 +28,7 @@
 
 #include <shrink.h>
 
-static char *version = "$shrink$";
+__attribute__((unused)) static const char *cvstag = "$shrink$";
 
 char	*s_algorithm;
 int	s_level;
