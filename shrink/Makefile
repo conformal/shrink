@@ -1,9 +1,11 @@
 # $shrink$
 
+PREFIX?=/usr/local
+BINDIR=${DESTDIR}${PREFIX}/bin
+LIBDIR=${DESTDIR}${PREFIX}/lib
+
 PROG= shrink
-#MAN= shrink.8
-NOMAN=1
-BINDIR=${PREFIX}/sbin
+NOMAN=
 
 .if exists(${.CURDIR}/../libshrink/obj)
 LDFLAGS+=		-L${.CURDIR}/../libshrink/obj
