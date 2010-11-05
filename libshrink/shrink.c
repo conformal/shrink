@@ -28,6 +28,8 @@
 
 #include <shrink.h>
 
+static char *version = "$shrink$";
+
 char	*s_algorithm;
 int	s_level;
 int	(*s_compress)(u_int8_t *, u_int8_t *, size_t, size_t *,
