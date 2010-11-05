@@ -16,11 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <err.h>
 #include <string.h>
 #include <util.h>
+#include <unistd.h>
 
 #include <shrink.h>
 
