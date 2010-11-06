@@ -196,6 +196,9 @@ test_file(void)
 
 	for (i = 0; i < count; i++) {
 		/* run 1 */
+		arc4random_buf(s1, sb.st_size);
+		arc4random_buf(c1, c1sz);
+		arc4random_buf(d1, sb.st_size);
 		f = fopen(filename, "r");
 		if (f == NULL)
 			err(1, "fopen");
@@ -213,6 +216,9 @@ test_file(void)
 		SHA1Final(sha1, &ctx1);
 
 		/* run 2 */
+		arc4random_buf(s2, sb.st_size);
+		arc4random_buf(c2, c2sz);
+		arc4random_buf(d2, sb.st_size);
 		f = fopen(filename, "r");
 		if (f == NULL)
 			err(1, "fopen");
@@ -269,7 +275,7 @@ main(int argc, char *argv[])
 			break;
 		case 'c': /* count */
 			count = atoi(optarg);
-			if (count <= 0 || count > 1000000)
+			if (count <= 0 || count > 1024 * 1024 * 1024)
 				errx(1, "invalid count");
 			break;
 		case 'f':
