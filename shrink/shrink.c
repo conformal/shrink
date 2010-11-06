@@ -23,11 +23,14 @@
 #include <string.h>
 #include <util.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <shrink.h>
 
 size_t			bs = 10 * 1024 * 1024;
 int			count = 1, random_data = 0;
+char			*filename = NULL;
 
 void
 print_time_scaled(char *s, struct timeval *t)
@@ -149,12 +152,88 @@ test_run(int algo, int level)
 	free(uncomp);
 }
 
+void
+test_file(void)
+{
+	int		i;
+	FILE		*f;
+	struct stat	sb;
+	uint8_t		*s, *c1, *c2, *d1, *d2;
+	size_t		c1sz, c2sz, comp_sz1, comp_sz2;
+	size_t		uncomp_sz1, uncomp_sz2;
+
+	if (s_init(S_ALG_LZO, S_L_MID))
+		errx(1, "s_init");
+
+	/* XXX yeah yeah yeah it's a race */
+	if (stat(filename, &sb))
+		err(1, "stat");
+
+	s = malloc(sb.st_size);
+	if (s == NULL)
+		err(1, "malloc");
+	c1sz = sb.st_size;
+	c1 = s_malloc(&c1sz);
+	if (c1 == NULL)
+		err(1, "malloc");
+	c2sz = sb.st_size;
+	c2 = s_malloc(&c2sz);
+	if (c2 == NULL)
+		err(1, "malloc");
+	d1 = malloc(sb.st_size);
+	if (d1 == NULL)
+		err(1, "malloc");
+	d2 = malloc(sb.st_size);
+	if (d2 == NULL)
+		err(1, "malloc");
+
+	f = fopen(filename, "r");
+	if (f == NULL)
+		err(1, "fopen");
+
+	if (fread(s, 1, sb.st_size, f) != sb.st_size)
+		err(1, "fread");
+
+	for (i = 0; i < count; i++) {
+		comp_sz1 = c1sz;
+		if (s_compress(s, c1, sb.st_size, &comp_sz1, NULL))
+			errx(1, "s_compress failed");
+		uncomp_sz1 = sb.st_size;
+		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
+			errx(1, "s_decompress 1");
+
+		comp_sz2 = c2sz;
+		if (s_compress(s, c2, sb.st_size, &comp_sz2, NULL))
+			errx(1, "s_compress failed");
+		uncomp_sz2 = sb.st_size;
+		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
+			errx(1, "s_decompress 2");
+
+		if (comp_sz1 != comp_sz2)
+			errx(1, "c size corruption");
+		if (uncomp_sz1 != uncomp_sz2)
+			errx(1, "u size corruption");
+		if (bcmp(c1, c2, comp_sz2))
+			errx(1, "c data corruption");
+		if (bcmp(d1, d2, uncomp_sz2))
+			errx(1, "d data corruption");
+		printf("run %d\n", i + 1);
+	}
+
+	free(c1);
+	free(c2);
+	free(d1);
+	free(d2);
+	free(s);
+	fclose(f);
+}
+
 int
 main(int argc, char *argv[])
 {
 	int			c;
 
-	while ((c = getopt(argc, argv, "b:c:r")) != -1) {
+	while ((c = getopt(argc, argv, "b:c:f:r")) != -1) {
 		switch (c) {
 		case 'b': /* block size */
 			bs = atoi(optarg);
@@ -166,12 +245,20 @@ main(int argc, char *argv[])
 			if (count <= 0 || count > 1000000)
 				errx(1, "invalid count");
 			break;
+		case 'f':
+			filename = optarg;
+			break;
 		case 'r':
 			random_data = 1;
 			break;
 		default:
 			errx(1, "invalid option");
 		}
+	}
+
+	if (filename) {
+		test_file();
+		exit(0);
 	}
 
 	test_run(S_ALG_NULL, S_L_NONE);
