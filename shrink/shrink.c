@@ -237,18 +237,30 @@ test_file(void)
 		SHA1Final(sha2, &ctx2);
 
 		/* validate */
-		if (comp_sz1 != comp_sz2)
-			errx(1, "c size corruption");
-		if (uncomp_sz1 != uncomp_sz2)
-			errx(1, "u size corruption");
-		if (bcmp(c1, c2, comp_sz2))
-			errx(1, "c data corruption");
-		if (bcmp(d1, d2, uncomp_sz2))
-			errx(1, "d data corruption");
-		if (bcmp(s1, s2, sb.st_size))
-			errx(1, "d data corruption");
-		if (bcmp(sha1, sha2, SHA1_DIGEST_LENGTH))
-			errx(1, "d data corruption");
+		if (comp_sz1 != comp_sz2) {
+			fprintf(stderr, "c size corruption\n");
+			abort();
+		}
+		if (uncomp_sz1 != uncomp_sz2) {
+			fprintf(stderr, "u size corruption\n");
+			abort();
+		}
+		if (bcmp(c1, c2, comp_sz2)) {
+			fprintf(stderr, "c data corruption\n");
+			abort();
+		}
+		if (bcmp(d1, d2, uncomp_sz2)) {
+			fprintf(stderr, "d data corruption\n");
+			abort();
+		}
+		if (bcmp(s1, s2, sb.st_size)) {
+			fprintf(stderr, "d data corruption\n");
+			abort();
+		}
+		if (bcmp(sha1, sha2, SHA1_DIGEST_LENGTH)) {
+			fprintf(stderr, "d data corruption\n");
+			abort();
+		}
 		if (i % 1000 == 0)
 			printf("run %d\n", i);
 
