@@ -197,14 +197,14 @@ test_file(void)
 	for (i = 0; i < count; i++) {
 		comp_sz1 = c1sz;
 		if (s_compress(s, c1, sb.st_size, &comp_sz1, NULL))
-			errx(1, "s_compress failed");
+			errx(1, "s_compress failed 1");
 		uncomp_sz1 = sb.st_size;
 		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
 			errx(1, "s_decompress 1");
 
 		comp_sz2 = c2sz;
 		if (s_compress(s, c2, sb.st_size, &comp_sz2, NULL))
-			errx(1, "s_compress failed");
+			errx(1, "s_compress failed 2");
 		uncomp_sz2 = sb.st_size;
 		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
 			errx(1, "s_decompress 2");
@@ -217,7 +217,8 @@ test_file(void)
 			errx(1, "c data corruption");
 		if (bcmp(d1, d2, uncomp_sz2))
 			errx(1, "d data corruption");
-		printf("run %d\n", i + 1);
+		if (i % 1000 == 0)
+			printf("run %d\n", i);
 	}
 
 	free(c1);
