@@ -191,6 +191,10 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
+#if defined(__OpenBSD__)
+	/* XXX workaround for compression resulting in different compression size */
+	bzero(wrkmem, sizeof(wrkmem));
+#endif
 	if (s_lzo1x_compress(src, len, dst, comp_sz, wrkmem) != LZO_E_OK)
 		return (S_LIB_COMPRESS);
 
