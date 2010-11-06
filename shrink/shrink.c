@@ -173,28 +173,29 @@ test_file(void)
 	if (stat(filename, &sb))
 		err(1, "stat");
 
-	s1 = malloc(sb.st_size);
-	if (s1 == NULL)
-		err(1, "malloc");
-	s2 = malloc(sb.st_size);
-	if (s2 == NULL)
-		err(1, "malloc");
-	c1sz = sb.st_size;
-	c1 = s_malloc(&c1sz);
-	if (c1 == NULL)
-		err(1, "malloc");
-	c2sz = sb.st_size;
-	c2 = s_malloc(&c2sz);
-	if (c2 == NULL)
-		err(1, "malloc");
-	d1 = malloc(sb.st_size);
-	if (d1 == NULL)
-		err(1, "malloc");
-	d2 = malloc(sb.st_size);
-	if (d2 == NULL)
-		err(1, "malloc");
-
 	for (i = 0; i < count; i++) {
+		/* get memory */
+		s1 = malloc(sb.st_size);
+		if (s1 == NULL)
+			err(1, "malloc");
+		s2 = malloc(sb.st_size);
+		if (s2 == NULL)
+			err(1, "malloc");
+		c1sz = sb.st_size;
+		c1 = s_malloc(&c1sz);
+		if (c1 == NULL)
+			err(1, "malloc");
+		c2sz = sb.st_size;
+		c2 = s_malloc(&c2sz);
+		if (c2 == NULL)
+			err(1, "malloc");
+		d1 = malloc(sb.st_size);
+		if (d1 == NULL)
+			err(1, "malloc");
+		d2 = malloc(sb.st_size);
+		if (d2 == NULL)
+			err(1, "malloc");
+
 		/* run 1 */
 		arc4random_buf(s1, sb.st_size);
 		arc4random_buf(c1, c1sz);
@@ -251,14 +252,14 @@ test_file(void)
 		if (i % 1000 == 0)
 			printf("run %d\n", i);
 
+		/* and return it */
+		free(c1);
+		free(c2);
+		free(d1);
+		free(d2);
+		free(s1);
+		free(s2);
 	}
-
-	free(c1);
-	free(c2);
-	free(d1);
-	free(d2);
-	free(s1);
-	free(s2);
 }
 
 int
