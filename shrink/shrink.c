@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sha1.h>
 
 #include <shrink.h>
 
@@ -158,9 +159,12 @@ test_file(void)
 	int		i;
 	FILE		*f;
 	struct stat	sb;
-	uint8_t		*s, *c1, *c2, *d1, *d2;
+	uint8_t		*s1, *s2, *c1, *c2, *d1, *d2;
 	size_t		c1sz, c2sz, comp_sz1, comp_sz2;
 	size_t		uncomp_sz1, uncomp_sz2;
+	uint8_t		sha1[SHA1_DIGEST_LENGTH];
+	uint8_t		sha2[SHA1_DIGEST_LENGTH];
+	SHA1_CTX	ctx1, ctx2;
 
 	if (s_init(S_ALG_LZO, S_L_MID))
 		errx(1, "s_init");
@@ -169,8 +173,11 @@ test_file(void)
 	if (stat(filename, &sb))
 		err(1, "stat");
 
-	s = malloc(sb.st_size);
-	if (s == NULL)
+	s1 = malloc(sb.st_size);
+	if (s1 == NULL)
+		err(1, "malloc");
+	s2 = malloc(sb.st_size);
+	if (s2 == NULL)
 		err(1, "malloc");
 	c1sz = sb.st_size;
 	c1 = s_malloc(&c1sz);
@@ -187,28 +194,42 @@ test_file(void)
 	if (d2 == NULL)
 		err(1, "malloc");
 
-	f = fopen(filename, "r");
-	if (f == NULL)
-		err(1, "fopen");
-
-	if (fread(s, 1, sb.st_size, f) != sb.st_size)
-		err(1, "fread");
-
 	for (i = 0; i < count; i++) {
+		/* run 1 */
+		f = fopen(filename, "r");
+		if (f == NULL)
+			err(1, "fopen");
+		if (fread(s1, 1, sb.st_size, f) != sb.st_size)
+			err(1, "fread");
 		comp_sz1 = c1sz;
-		if (s_compress(s, c1, sb.st_size, &comp_sz1, NULL))
+		if (s_compress(s1, c1, sb.st_size, &comp_sz1, NULL))
 			errx(1, "s_compress failed 1");
 		uncomp_sz1 = sb.st_size;
 		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
 			errx(1, "s_decompress 1");
+		fclose(f);
+		SHA1Init(&ctx1);
+		SHA1Update(&ctx1, c1, comp_sz1);
+		SHA1Final(sha1, &ctx1);
 
+		/* run 2 */
+		f = fopen(filename, "r");
+		if (f == NULL)
+			err(1, "fopen");
+		if (fread(s2, 1, sb.st_size, f) != sb.st_size)
+			err(1, "fread");
 		comp_sz2 = c2sz;
-		if (s_compress(s, c2, sb.st_size, &comp_sz2, NULL))
+		if (s_compress(s2, c2, sb.st_size, &comp_sz2, NULL))
 			errx(1, "s_compress failed 2");
 		uncomp_sz2 = sb.st_size;
 		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
 			errx(1, "s_decompress 2");
+		fclose(f);
+		SHA1Init(&ctx2);
+		SHA1Update(&ctx2, c2, comp_sz2);
+		SHA1Final(sha2, &ctx2);
 
+		/* validate */
 		if (comp_sz1 != comp_sz2)
 			errx(1, "c size corruption");
 		if (uncomp_sz1 != uncomp_sz2)
@@ -217,16 +238,21 @@ test_file(void)
 			errx(1, "c data corruption");
 		if (bcmp(d1, d2, uncomp_sz2))
 			errx(1, "d data corruption");
+		if (bcmp(s1, s2, sb.st_size))
+			errx(1, "d data corruption");
+		if (bcmp(sha1, sha2, SHA1_DIGEST_LENGTH))
+			errx(1, "d data corruption");
 		if (i % 1000 == 0)
 			printf("run %d\n", i);
+
 	}
 
 	free(c1);
 	free(c2);
 	free(d1);
 	free(d2);
-	free(s);
-	fclose(f);
+	free(s1);
+	free(s2);
 }
 
 int
