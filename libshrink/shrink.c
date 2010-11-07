@@ -191,10 +191,11 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
-#if defined(__OpenBSD__)
-	/* XXX workaround for compression resulting in different compression size */
+	/*
+	 * In order to guarantee that the compressed buffer is always
+	 * identical one has to clear wrkmem.  This is per the O in LZO.
+	 */
 	bzero(wrkmem, sizeof(wrkmem));
-#endif
 	if (s_lzo1x_compress(src, len, dst, comp_sz, wrkmem) != LZO_E_OK)
 		return (S_LIB_COMPRESS);
 
