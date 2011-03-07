@@ -18,7 +18,7 @@ DPADD+=${.CURDIR}/../libshrink/libshrink.a
 SRCS= shrink.c
 COPT+= -O2
 CFLAGS+= -Wall -Werror -ggdb3
-LDADD+= -lutil -L/usr/local/lib -lshrink
+LDADD+= -lutil -lssl -lcrypto -L/usr/local/lib -lshrink
 
 CFLAGS+= -I${.CURDIR}/../libshrink -I.
 

@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sha1.h>
+#include <openssl/sha.h>
 
 #include <shrink.h>
 
@@ -162,9 +162,9 @@ test_file(void)
 	uint8_t		*s1, *s2, *c1, *c2, *d1, *d2;
 	size_t		c1sz, c2sz, comp_sz1, comp_sz2;
 	size_t		uncomp_sz1, uncomp_sz2;
-	uint8_t		sha1[SHA1_DIGEST_LENGTH];
-	uint8_t		sha2[SHA1_DIGEST_LENGTH];
-	SHA1_CTX	ctx1, ctx2;
+	uint8_t		sha1[SHA_DIGEST_LENGTH];
+	uint8_t		sha2[SHA_DIGEST_LENGTH];
+	SHA_CTX	ctx1, ctx2;
 
 	if (s_init(S_ALG_LZO, S_L_MID))
 		errx(1, "s_init");
@@ -212,9 +212,9 @@ test_file(void)
 		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
 			errx(1, "s_decompress 1");
 		fclose(f);
-		SHA1Init(&ctx1);
-		SHA1Update(&ctx1, c1, comp_sz1);
-		SHA1Final(sha1, &ctx1);
+		SHAInit(&ctx1);
+		SHAUpdate(&ctx1, c1, comp_sz1);
+		SHAFinal(sha1, &ctx1);
 
 		/* run 2 */
 		arc4random_buf(s2, sb.st_size);
@@ -232,9 +232,9 @@ test_file(void)
 		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
 			errx(1, "s_decompress 2");
 		fclose(f);
-		SHA1Init(&ctx2);
-		SHA1Update(&ctx2, c2, comp_sz2);
-		SHA1Final(sha2, &ctx2);
+		SHAInit(&ctx2);
+		SHAUpdate(&ctx2, c2, comp_sz2);
+		SHAFinal(sha2, &ctx2);
 
 		/* validate */
 		if (comp_sz1 != comp_sz2) {
@@ -257,7 +257,7 @@ test_file(void)
 			fprintf(stderr, "d data corruption\n");
 			abort();
 		}
-		if (bcmp(sha1, sha2, SHA1_DIGEST_LENGTH)) {
+		if (bcmp(sha1, sha2, SHA_DIGEST_LENGTH)) {
 			fprintf(stderr, "d data corruption\n");
 			abort();
 		}
