@@ -212,9 +212,9 @@ test_file(void)
 		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
 			errx(1, "s_decompress 1");
 		fclose(f);
-		SHAInit(&ctx1);
-		SHAUpdate(&ctx1, c1, comp_sz1);
-		SHAFinal(sha1, &ctx1);
+		SHA1_Init(&ctx1);
+		SHA1_Update(&ctx1, c1, comp_sz1);
+		SHA1_Final(sha1, &ctx1);
 
 		/* run 2 */
 		arc4random_buf(s2, sb.st_size);
@@ -232,9 +232,9 @@ test_file(void)
 		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
 			errx(1, "s_decompress 2");
 		fclose(f);
-		SHAInit(&ctx2);
-		SHAUpdate(&ctx2, c2, comp_sz2);
-		SHAFinal(sha2, &ctx2);
+		SHA1_Init(&ctx2);
+		SHA1_Update(&ctx2, c2, comp_sz2);
+		SHA1_Final(sha2, &ctx2);
 
 		/* validate */
 		if (comp_sz1 != comp_sz2) {
