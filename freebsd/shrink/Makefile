@@ -1,8 +1,8 @@
 # $shrink$
 
 PREFIX?=/usr/local
-BINDIR=${DESTDIR}${PREFIX}/bin
-LIBDIR=${DESTDIR}${PREFIX}/lib
+BINDIR=${PREFIX}/bin
+LIBDIR=${PREFIX}/lib
 
 LIBSHRINKDIR=${.CURDIR}/../../libshrink
 SHRINKDIR=${.CURDIR}/../../shrink
