@@ -1,8 +1,8 @@
 # $shrink$
 
-PREFIX?=/usr/local
-BINDIR=${PREFIX}/bin
-LIBDIR=${PREFIX}/lib
+LOCALBASE?=/usr/local
+BINDIR=${LOCALBASE}/bin
+LIBDIR=${LOCALBASE}/lib
 
 LIBSHRINKDIR=${.CURDIR}/../../libshrink
 
@@ -16,17 +16,19 @@ SRCS= shrink.c
 CFLAGS+= -fdiagnostics-show-option
 CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
-CFLAGS+=-I${LIBSHRINKDIR} -I/usr/local/include
-LDADD+=-L${PREFIX}/lib
+CFLAGS+=-I${LIBSHRINKDIR} -I${LOCALBASE}include
+LDADD+=-L${LOCALBASE}/lib
 
 MAN=  shrink.3
+MANDIR=${LOCALBASE}/man/cat
+
 HDRS= shrink.h
 
 afterinstall:
 	@cd ${.CURDIR}; for i in ${HDRS}; do \
-	cmp -s ../../libshrink/$$i ${PREFIX}/include/$$i || \
-	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) ../../libshrink/$$i ${PREFIX}/include; \
-	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) ../../libshrink/$$i ${PREFIX}/include;\
+	cmp -s ../../libshrink/$$i ${LOCALBASE}/include/$$i || \
+	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) ../../libshrink/$$i ${LOCALBASE}/include; \
+	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) ../../libshrink/$$i ${LOCALBASE}/include;\
 	done
 
 .include <bsd.own.mk>

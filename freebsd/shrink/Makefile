@@ -1,8 +1,8 @@
 # $shrink$
 
-PREFIX?=/usr/local
-BINDIR=${PREFIX}/bin
-LIBDIR=${PREFIX}/lib
+LOCALBASE?=/usr/local
+BINDIR=${LOCALBASE}/bin
+LIBDIR=${LOCALBASE}/lib
 
 LIBSHRINKDIR=${.CURDIR}/../../libshrink
 SHRINKDIR=${.CURDIR}/../../shrink
@@ -23,8 +23,8 @@ DPADD+=${.CURDIR}/../libshrink/libshrink.a
 SRCS= shrink.c fmt_scaled.c arc4random_buf.c
 COPT+= -O2
 DEBUG+= -ggdb3
-CFLAGS+= -Wall -Werror -I/usr/local/include
-LDADD+= -lutil -L/usr/local/lib -lshrink
+CFLAGS+= -Wall -Werror -I${LOCALBASE}/include
+LDADD+= -lutil -L${LOCALBASE}lib -lshrink
 
 CFLAGS+= -I${LIBSHRINKDIR} -I${.CURDIR}/../include
 

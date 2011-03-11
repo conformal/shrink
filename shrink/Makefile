@@ -1,8 +1,8 @@
 # $shrink$
 
-PREFIX?=/usr/local
-BINDIR=${PREFIX}/bin
-LIBDIR=${PREFIX}/lib
+LOCALBASE?=/usr/local
+BINDIR=${LOCALBASE}/bin
+LIBDIR=${LOCALBASE}/lib
 
 PROG= shrink
 NOMAN=
@@ -18,7 +18,7 @@ DPADD+=${.CURDIR}/../libshrink/libshrink.a
 SRCS= shrink.c
 COPT+= -O2
 CFLAGS+= -Wall -Werror -ggdb3
-LDADD+= -lutil -lssl -lcrypto -L/usr/local/lib -lshrink
+LDADD+= -lutil -lssl -lcrypto -L${LOCALBASE}/lib -lshrink
 
 CFLAGS+= -I${.CURDIR}/../libshrink -I.
 
