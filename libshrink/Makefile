@@ -23,8 +23,8 @@ HDRS= shrink.h
 afterinstall:
 	@cd ${.CURDIR}; for i in ${HDRS}; do \
 	cmp -s $$i ${LOCALBASE}/include/$$i || \
-	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${LOCALBASE}/include; \
-	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${LOCALBASE}/include;\
+	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${LOCALBASE}/include; \
+	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${LOCALBASE}/include;\
 	done
 
 .include <bsd.own.mk>
