@@ -16,7 +16,7 @@ SRCS= shrink.c
 CFLAGS+= -fdiagnostics-show-option
 CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
-CFLAGS+=-I${LIBSHRINKDIR} -I${LOCALBASE}include
+CFLAGS+=-I${LIBSHRINKDIR} -I${LOCALBASE}/include
 LDADD+=-L${LOCALBASE}/lib
 
 MAN=  shrink.3
