@@ -24,7 +24,7 @@ SRCS= shrink.c fmt_scaled.c arc4random_buf.c
 COPT+= -O2
 DEBUG+= -ggdb3
 CFLAGS+= -Wall -Werror -I${LOCALBASE}/include
-LDADD+= -lutil -L${LOCALBASE}lib -lshrink
+LDADD+= -lutil -L${LOCALBASE}lib -lshrink -lssl
 
 CFLAGS+= -I${LIBSHRINKDIR} -I${.CURDIR}/../include
 
