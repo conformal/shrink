@@ -16,18 +16,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <shrink.h>
+
+#ifndef NO_UTIL_H
+#include <util.h>
+#endif
+
 #include <sys/time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <err.h>
 #include <string.h>
-#include <util.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <openssl/sha.h>
-
-#include <shrink.h>
 
 size_t			bs = 10 * 1024 * 1024;
 int			count = 1, random_data = 0;

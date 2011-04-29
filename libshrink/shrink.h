@@ -16,7 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef NEED_LIBCLENS
+#include <clens.h>
+#endif
+
 #include <stdlib.h>
+#include <stdint.h>
 
 #define S_OK		(0)
 #define S_INTEGRITY	(1)
