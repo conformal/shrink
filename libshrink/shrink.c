@@ -196,7 +196,8 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	 * identical one has to clear wrkmem.  This is per the O in LZO.
 	 */
 	bzero(wrkmem, sizeof(wrkmem));
-	if (s_lzo1x_compress(src, len, dst, comp_sz, wrkmem) != LZO_E_OK)
+	if (s_lzo1x_compress(src, len, dst, (lzo_uintp)comp_sz,
+	    wrkmem) != LZO_E_OK)
 		return (S_LIB_COMPRESS);
 
 	if (elapsed) {
@@ -225,7 +226,8 @@ s_decompress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
-	if (lzo1x_decompress(src, len, dst, uncomp_sz, NULL) != LZO_E_OK)
+	if (lzo1x_decompress(src, len, dst, (lzo_uintp)uncomp_sz,
+	    NULL) != LZO_E_OK)
 		return (S_LIB_COMPRESS);
 
 	if (elapsed) {
@@ -281,7 +283,7 @@ s_compress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
-	if ((r = compress2(dst, comp_sz, src, len, s_level)) != Z_OK)
+	if ((r = compress2(dst, (uLongf *)comp_sz, src, len, s_level)) != Z_OK)
 		return (S_LIB_COMPRESS);
 
 	if (elapsed) {
@@ -310,7 +312,7 @@ s_decompress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 	if (elapsed && gettimeofday(&start, NULL) == -1)
 		return (S_LIBC);
 
-	if (uncompress(dst, uncomp_sz, src, len) != Z_OK)
+	if (uncompress(dst, (uLongf *) uncomp_sz, src, len) != Z_OK)
 		return (S_LIB_COMPRESS);
 
 	if (elapsed) {
