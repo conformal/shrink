@@ -40,11 +40,11 @@ endif
 CC ?= gcc
 INSTALL ?= install
 MKDIR ?= mkdir
-RM ?= $(RM)
+RM ?= rm -f
 
 # Compiler and linker flags.
 CPPFLAGS += -DNEED_LIBCLENS
-INCFLAGS += -I ../libshrink
+INCFLAGS += -I ../libshrink -I $(INCDIR)/clens
 WARNFLAGS ?= -Wall -Werror
 DEBUG += -g
 CFLAGS += $(INCFLAGS) $(WARNFLAGS) $(DEBUG)

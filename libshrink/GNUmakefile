@@ -45,11 +45,11 @@ INSTALL ?= install
 LN ?= ln
 LNFLAGS ?= -sf
 MKDIR ?= mkdir
-RM ?= $(RM)
+RM ?= rm -f
 
 # Compiler and linker flags.
 CPPFLAGS += -DNEED_LIBCLENS
-INCFLAGS += -I .
+INCFLAGS += -I . -I $(INCDIR)/clens
 #WARNFLAGS ?= -Wall -Werror
 WARNFLAGS ?= -Wall
 DEBUG += -g
