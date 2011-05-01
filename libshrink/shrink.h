@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <sys/time.h>
 
 #define S_OK		(0)
 #define S_INTEGRITY	(1)

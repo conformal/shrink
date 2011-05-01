@@ -1,33 +1,44 @@
 # $shrink$
 
+SYSTEM != uname -s
+.if exists(${.CURDIR}/../config/Makefile.$(SYSTEM:L))
+.  include "${.CURDIR}/../config/Makefile.$(SYSTEM:L)"
+.endif
+
 LOCALBASE?=/usr/local
-BINDIR=${LOCALBASE}/bin
-LIBDIR=${LOCALBASE}/lib
+BINDIR?=${LOCALBASE}/bin
+LIBDIR?=${LOCALBASE}/lib
+INCDIR=${LOCALBASE}/include
 
 #WANTLINT=
 LIB= shrink
 SRCS= shrink.c
-.if defined(${COMPILER_VERSION})  &&  ${COMPILER_VERSION:L} == "gcc4"
-CFLAGS+= -fdiagnostics-show-option
-.endif
+HDRS= shrink.h
+MAN=  shrink.3
+
 CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
-CPPFLAGS+=-I${.CURDIR} -I${LOCALBASE}/include
-LDADD+=-L${LOCALBASE}/lib
-
-MAN=  shrink.3
-MANDIR=${LOCALBASE}/man/cat
-
-HDRS= shrink.h
+CFLAGS+= -I${.CURDIR} -I${INCDIR}
+LDADD+= -L${LOCALBASE}/lib
 
 afterinstall:
 	@cd ${.CURDIR}; for i in ${HDRS}; do \
-	cmp -s $$i ${LOCALBASE}/include/$$i || \
-	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${LOCALBASE}/include; \
-	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${LOCALBASE}/include;\
+	cmp -s $$i ${INCDIR}/$$i || \
+	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${INCDIR}/; \
+	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${INCDIR}/; \
 	done
 
-.include <bsd.own.mk>
+uninstall:
+	@for i in ${HDRS}; do \
+	echo rm -f ${INCDIR}/$$i; \
+	rm -f ${INCDIR}/$$i; \
+	done
+
+	@for i in ${_LIBS}; do \
+	echo rm -f ${LIBDIR}/$$i; \
+	rm -f ${LIBDIR}/$$i; \
+	done
+
 .include <bsd.lib.mk>
 
 # must be after Makefile.inc is included

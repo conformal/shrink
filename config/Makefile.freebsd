@@ -1,0 +1,15 @@
+# $shrink$
+
+.if exists(${.CURDIR}/shlib_version)
+.  include "${.CURDIR}/shlib_version"
+SHLIB_MAJOR=${major}
+.endif
+
+.include "${.CURDIR}/../Makefile.inc"
+
+MANDIR=${LOCALBASE}/man/man
+
+CFLAGS+= -fdiagnostics-show-option
+CFLAGS+= -DNEED_LIBCLENS
+CFLAGS+= -I${INCDIR}/clens
+LDADD+= -L ${LIBDIR} -lclens
