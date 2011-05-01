@@ -1,8 +1,8 @@
 # $shrink$
 
 LOCALBASE?=/usr/local
-BINDIR=${LOCALBASE}/bin
-LIBDIR=${LOCALBASE}/lib
+BINDIR?=${LOCALBASE}/bin
+LIBDIR?=${LOCALBASE}/lib
 
 PROG= shrink
 NOMAN=
