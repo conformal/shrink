@@ -7,7 +7,6 @@ SYSTEM != uname -s
 
 LOCALBASE?=/usr/local
 BINDIR?=${LOCALBASE}/bin
-LIBDIR?=${LOCALBASE}/lib
 INCDIR?=${LOCALBASE}/include
 
 PROG= shrink
@@ -16,10 +15,8 @@ NO_MAN=
 
 .if exists(${.CURDIR}/../libshrink/obj)
 LDADD+=	-L${.CURDIR}/../libshrink/obj
-DPADD+= ${.CURDIR}/../libshrink/obj/libshrink.a
 .else
 LDADD+=	-L${.CURDIR}/../libshrink
-DPADD+= ${.CURDIR}/../libshrink/libshrink.a
 .endif
 
 SRCS= shrink.c
