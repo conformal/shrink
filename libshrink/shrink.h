@@ -30,6 +30,8 @@
 #define SHRINK_VERSION_PATCH	1
 #define SHRINK_VERSION		"0.2.1"
 
+void	shrink_version(int *major, int *minor, int *patch);
+
 #define S_OK		(0)
 #define S_INTEGRITY	(1)
 #define S_INVALID	(2)
