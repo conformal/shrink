@@ -34,7 +34,8 @@
 
 #include <shrink.h>
 
-__attribute__((unused)) static const char *cvstag = "$shrink$";
+static const char *cvstag = "$shrink$";
+static const char *vertag = "version: " SHRINK_VERSION;
 
 char	*s_algorithm;
 int	s_level;
@@ -44,6 +45,17 @@ int	(*s_decompress)(uint8_t *, uint8_t *, size_t, size_t *,
 	    struct timeval *);
 void	*(*s_malloc)(size_t *);
 size_t	(*s_compress_bounds)(size_t);
+
+void
+shrink_version(int *major, int *minor, int *patch)
+{
+	*major = SHRINK_VERSION_MAJOR;
+	*minor = SHRINK_VERSION_MINOR;
+	*patch = SHRINK_VERSION_PATCH;
+	/* Portable way to avoid unused variable compile warnings */
+	(void) (cvstag);
+	(void) (vertag);
+}
 
 /* null compression */
 size_t
