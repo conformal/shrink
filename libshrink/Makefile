@@ -23,7 +23,7 @@ LDADD+= -L${LOCALBASE}/lib
 
 afterinstall:
 	@cd ${.CURDIR}; for i in ${HDRS}; do \
-	cmp -s $$i ${INCDIR}/$$i || \
+	cmp -s $$i ${DESTDIR}${INCDIR}/$$i || \
 	${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${INCDIR}/; \
 	echo ${INSTALL} ${INSTALL_COPY} -m 444 -o $(BINOWN) -g $(BINGRP) $$i ${DESTDIR}${INCDIR}/; \
 	done
