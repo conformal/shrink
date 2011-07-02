@@ -55,7 +55,7 @@ INCFLAGS += -I . -I $(INCDIR)/clens
 WARNFLAGS ?= -Wall
 DEBUG += -g
 CFLAGS += $(INCFLAGS) $(WARNFLAGS) $(DEBUG)
-LDFLAGS += -lclens
+LDFLAGS +=
 SHARED_OBJ_EXT ?= o
 
 LIB.NAME = shrink
