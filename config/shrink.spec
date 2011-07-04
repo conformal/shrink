@@ -14,7 +14,7 @@ URL:		http://opensource.conformal.com/wiki/shrink
 Source: 	%{name}-%{version}.tar.gz
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
 Prefix: 	/usr
-Requires:	lzo >= 2.03, xz
+Requires:	lzo >= 2.03, xz, libbsd
 
 %description
 The shrink library provides a single API into several compression algorithms.
@@ -48,7 +48,7 @@ make install DESTDIR=$RPM_BUILD_ROOT LOCALBASE=/usr
 %package devel
 Summary: Libraries and header files to develop applications using shrink
 Group: Development/Libraries
-Requires: clens-devel >= 0.0.5, lzo-devel >= 2.03, xz-devel
+Requires: clens-devel >= 0.0.5, lzo-devel >= 2.03, xz-devel, libbsd-devel
 
 %description devel
 This package contains the libraries, include files, and documentation to
