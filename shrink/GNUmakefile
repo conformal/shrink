@@ -44,11 +44,13 @@ RM ?= rm -f
 
 # Compiler and linker flags.
 CPPFLAGS += -DNEED_LIBCLENS
-INCFLAGS += -I ../libshrink -I $(INCDIR)/clens
+INCFLAGS += -I ../libshrink -I $(INCDIR)/clens -I $(LOCALBASE)/ssl/include
 WARNFLAGS ?= -Wall -Werror
 DEBUG += -g
 CFLAGS += $(INCFLAGS) $(WARNFLAGS) $(DEBUG)
-LDFLAGS += -L../libshrink/obj -L../libshrink -lshrink -lssl -lcrypto -lclens -lbsd
+LDFLAGS += -L$(LOCALBASE)/ssl/lib
+LDFLAGS += -L../libshrink/obj -L../libshrink -lshrink -lclens -lbsd
+LDFLAGS += -Wl,-Bstatic -lssl -lcrypto -Wl,-Bdynamic -ldl
 
 BIN.NAME = shrink
 BIN.SRCS = shrink.c
