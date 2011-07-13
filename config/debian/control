@@ -1,0 +1,41 @@
+Source: shrink
+Priority: optional
+Maintainer: Conformal Systems LLC <package-discuss@conformal.com>
+Build-Depends: debhelper (>= 7), libc6-dev, locales
+Standards-Version: 3.8.3
+Section: libs
+Homepage: http://opensource.conformal.com/wiki/shrink
+
+Package: libshrink-dev
+Section: libdevel
+Architecture: any
+Depends: libclens-dev (>= 0.0.5), liblzo2-dev (>= 2.03), liblzma-dev, zlib1g-dev,
+         libshrink (= ${binary:Version})
+Description: Library that provides a single API into compression algorithms - development
+ This package contains the libraries, include files, and documentation
+ to develop applications with shrink.
+ The shrink library provides a single API into several compression algorithms.
+ It enables developers to easily add compression and decompression functionality
+ to an existing code base. Currently it supports LZO, LZ77, and LZMA.  All of
+ these fine algorithms have pros and cons. LZO is the fastest by an order of
+ magnitude but trades of compression ratio for speed. LZ77 is the middle of the
+ road on both speed and compression ration. LZMA is slow but compresses the
+ best.  The idea of this library is to provide an app writer with the capability
+ of using any compression/decompression algorithm without having to understand
+ the intricate parts.
+
+Package: libshrink
+Section: libs
+Architecture: any
+Depends: liblzo2 (>= 2.03), liblzma1, zlib1g, ${shlibs:Depends}, ${misc:Depends}
+Description: Library that provides a single API into compression algorithms - runtime
+ This package contains the runtime, shared library of shrink.
+ The shrink library provides a single API into several compression algorithms.
+ It enables developers to easily add compression and decompression functionality
+ to an existing code base. Currently it supports LZO, LZ77, and LZMA.  All of
+ these fine algorithms have pros and cons. LZO is the fastest by an order of
+ magnitude but trades of compression ratio for speed. LZ77 is the middle of the
+ road on both speed and compression ration. LZMA is slow but compresses the
+ best.  The idea of this library is to provide an app writer with the capability
+ of using any compression/decompression algorithm without having to understand
+ the intricate parts.
