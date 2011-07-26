@@ -27,8 +27,8 @@
 /* versioning */
 #define SHRINK_VERSION_MAJOR	0
 #define SHRINK_VERSION_MINOR	2
-#define SHRINK_VERSION_PATCH	1
-#define SHRINK_VERSION		"0.2.1"
+#define SHRINK_VERSION_PATCH	2
+#define SHRINK_VERSION		"0.2.2"
 
 void	shrink_version(int *major, int *minor, int *patch);
 
