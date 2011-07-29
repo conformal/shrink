@@ -13,10 +13,12 @@ PROG= shrink
 NOMAN=
 NO_MAN=
 
-.if exists(${.CURDIR}/../libshrink/obj)
+.if ${.CURDIR} == ${.OBJDIR}
+LDADD+=	-L${.CURDIR}/../libshrink
+.elif ${.CURDIR}/obj == ${.OBJDIR}
 LDADD+=	-L${.CURDIR}/../libshrink/obj
 .else
-LDADD+=	-L${.CURDIR}/../libshrink
+LDADD+=	-L${.OBJDIR}/../libshrink
 .endif
 
 SRCS= shrink.c
