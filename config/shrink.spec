@@ -1,7 +1,7 @@
 # $shrink$
 
 %define name		shrink
-%define version		0.2.2
+%define version		0.2.3
 %define release		1
 
 Name: 		%{name}
@@ -62,6 +62,8 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Mon Aug 15 2011 - davec 0.2.3-1
+- Explicity link shared lib deps
 * Tue Jul 26 2011 - davec 0.2.2-1
 - Don't link against clens directly from library
 * Tue Jul 03 2011 - davec 0.2.1-1
