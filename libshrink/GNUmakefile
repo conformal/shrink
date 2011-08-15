@@ -30,14 +30,17 @@ SO_MINOR = $(minor)
 # must be after Makefile.inc is included
 ifdef SUPPORT_LZW
 CPPFLAGS += -DSUPPORT_LZW
+LDFLAGS += -lz
 endif
 
 ifdef SUPPORT_LZO2
 CPPFLAGS += -DSUPPORT_LZO2
+LDFLAGS += -llzo2
 endif
 
 ifdef SUPPORT_LZMA
 CPPFLAGS += -DSUPPORT_LZMA
+LDFLAGS += -llzma
 endif
 
 # System utils.
