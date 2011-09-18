@@ -1,4 +1,3 @@
-# $shrink$
 
 SUBDIRS = libshrink shrink
 TARGETS = clean obj install uninstall depend

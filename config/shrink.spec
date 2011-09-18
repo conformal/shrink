@@ -1,4 +1,3 @@
-# $shrink$
 
 %define name		shrink
 %define version		0.2.3

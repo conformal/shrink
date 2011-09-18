@@ -1,4 +1,3 @@
-/* $shrink$ */
 /*
  * Copyright (c) 2010 Marco Peereboom <marco@peereboom.us>
  * Copyright (c) 2010 Conformal Systems LLC <info@conformal.com>

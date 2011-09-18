@@ -1,4 +1,3 @@
-# $shrink$
 
 .if exists(${.CURDIR}/shlib_version)
 .  include "${.CURDIR}/shlib_version"

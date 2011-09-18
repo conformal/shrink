@@ -1,4 +1,3 @@
-# $shrink$
 
 .include <bsd.own.mk>
 

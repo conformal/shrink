@@ -1,4 +1,3 @@
-/* $shrink$ */
 /*
  * Copyright (c) 2010 Marco Peereboom <marco@peereboom.us>
  * Copyright (c) 2010 Conformal Systems LLC <info@conformal.com>
@@ -34,7 +33,6 @@
 
 #include <shrink.h>
 
-static const char *cvstag = "$shrink$";
 static const char *vertag = "version: " SHRINK_VERSION;
 
 char	*s_algorithm;
@@ -53,7 +51,6 @@ shrink_version(int *major, int *minor, int *patch)
 	*minor = SHRINK_VERSION_MINOR;
 	*patch = SHRINK_VERSION_PATCH;
 	/* Portable way to avoid unused variable compile warnings */
-	(void) (cvstag);
 	(void) (vertag);
 }
 
