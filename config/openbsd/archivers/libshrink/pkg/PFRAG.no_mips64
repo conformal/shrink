@@ -1,0 +1,2 @@
+@comment $OpenBSD$
+lib/libshrink_pic.a
