@@ -1,4 +1,3 @@
-
 %define name		shrink
 %define version		0.2.3
 %define release		1
