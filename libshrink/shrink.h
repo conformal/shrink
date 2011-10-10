@@ -24,10 +24,14 @@
 #include <sys/time.h>
 
 /* versioning */
+#define SHRINK_STRINGIFY(x)	#x
+#define SHRINK_STR(x)		SHRINK_STRINGIFY(x)
 #define SHRINK_VERSION_MAJOR	0
 #define SHRINK_VERSION_MINOR	2
 #define SHRINK_VERSION_PATCH	3
-#define SHRINK_VERSION		"0.2.3"
+#define SHRINK_VERSION		SHRINK_STR(SHRINK_VERSION_MAJOR) "." \
+				SHRINK_STR(SHRINK_VERSION_MINOR) "." \
+				SHRINK_STR(SHRINK_VERSION_PATCH)
 
 void	shrink_version(int *major, int *minor, int *patch);
 
