@@ -5,7 +5,7 @@ COMMENT=	compression wrapper library
 DISTNAME=	shrink-0.2.3
 PKGNAME=	lib${DISTNAME}
 CATEGORIES=    	archivers devel
-SHARED_LIBS=	shrink	0.1
+SHARED_LIBS=	shrink	0.2
 
 HOMEPAGE=	http://opensource.conformal.com/wiki/Shrink	
 MASTER_SITES=	http://opensource.conformal.com/snapshots/shrink/
