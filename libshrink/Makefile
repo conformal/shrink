@@ -14,9 +14,14 @@ SRCS= shrink.c
 HDRS= shrink.h
 MAN=  shrink.3
 
+BUILDVERSION != sh "${.CURDIR}/../buildver.sh"
+
 CFLAGS+= -Wall -Werror
 CFLAGS+= -ggdb3
 CFLAGS+= -I${.CURDIR} -I${INCDIR}
+.if !${BUILDVERSION} == ""
+CPPFLAGS+= -DBUILDSTR=\"$(BUILDVERSION)\"
+.endif
 LDADD+= -L${LOCALBASE}/lib
 
 afterinstall:

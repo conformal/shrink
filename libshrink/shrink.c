@@ -33,7 +33,12 @@
 
 #include <shrink.h>
 
+#ifdef BUILDSTR
+static const char *vertag = "version: " SHRINK_VERSION " " BUILDSTR;
+#else
 static const char *vertag = "version: " SHRINK_VERSION;
+#endif
+
 
 char	*s_algorithm;
 int	s_level;
@@ -44,14 +49,18 @@ int	(*s_decompress)(uint8_t *, uint8_t *, size_t, size_t *,
 void	*(*s_malloc)(size_t *);
 size_t	(*s_compress_bounds)(size_t);
 
+const char *
+shrink_verstring(void)
+{
+	return (vertag);
+}
+
 void
 shrink_version(int *major, int *minor, int *patch)
 {
 	*major = SHRINK_VERSION_MAJOR;
 	*minor = SHRINK_VERSION_MINOR;
 	*patch = SHRINK_VERSION_PATCH;
-	/* Portable way to avoid unused variable compile warnings */
-	(void) (vertag);
 }
 
 /* null compression */

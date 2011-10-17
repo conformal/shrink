@@ -33,7 +33,8 @@
 				SHRINK_STR(SHRINK_VERSION_MINOR) "." \
 				SHRINK_STR(SHRINK_VERSION_PATCH)
 
-void	shrink_version(int *major, int *minor, int *patch);
+const char	*shrink_verstring(void);
+void		 shrink_version(int *major, int *minor, int *patch);
 
 #define S_OK		(0)
 #define S_INTEGRITY	(1)
