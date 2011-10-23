@@ -104,7 +104,7 @@ s_compress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 
 	*comp_sz = len;
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 
 int
@@ -132,7 +132,7 @@ s_decompress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 
 	*uncomp_sz = len;
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 
 #if defined(SUPPORT_LZO2)
@@ -224,7 +224,7 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 
 int
@@ -254,7 +254,7 @@ s_decompress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 #endif /* SUPPORT_LZO2 */
 
@@ -310,7 +310,7 @@ s_compress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 
 int
@@ -339,7 +339,7 @@ s_decompress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 #endif /* SUPPORT_LZW */
 
@@ -416,7 +416,7 @@ s_compress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 
 int
@@ -460,7 +460,7 @@ s_decompress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 		timersub(&end, &start, elapsed);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }
 #endif /* SUPPORT_LZMA */
 
@@ -566,5 +566,5 @@ s_init(int algorithm, int level)
 		return (S_INVALID);
 	}
 
-	return (S_OK);
+	return (SHRINK_OK);
 }

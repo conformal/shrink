@@ -36,12 +36,7 @@
 const char	*shrink_verstring(void);
 void		 shrink_version(int *major, int *minor, int *patch);
 
-/*
- * XXX: S_OK is quite common and already exists on some platforms.  However,
- * XXX: it is 0 pretty much everywhere it exists, so just #undef it first.
- */
-#undef S_OK
-#define S_OK		(0)
+#define SHRINK_OK	(0)
 #define S_INTEGRITY	(1)
 #define S_INVALID	(2)
 #define S_LIBC		(3)
