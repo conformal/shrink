@@ -36,21 +36,21 @@
 const char	*shrink_verstring(void);
 void		 shrink_version(int *major, int *minor, int *patch);
 
-#define SHRINK_OK	(0)
-#define S_INTEGRITY	(1)
-#define S_INVALID	(2)
-#define S_LIBC		(3)
-#define S_LIB_COMPRESS	(4)
+#define SHRINK_OK		(0)
+#define SHRINK_INTEGRITY	(1)
+#define SHRINK_INVALID		(2)
+#define SHRINK_LIBC		(3)
+#define SHRINK_LIB_COMPRESS	(4)
 
-#define S_ALG_NULL	(0)
-#define S_ALG_LZO	(1)
-#define S_ALG_LZW	(2)
-#define S_ALG_LZMA	(3)
+#define SHRINK_ALG_NULL		(0)
+#define SHRINK_ALG_LZO		(1)
+#define SHRINK_ALG_LZW		(2)
+#define SHRINK_ALG_LZMA		(3)
 
-#define S_L_NONE	(0)
-#define S_L_MIN		(1)
-#define S_L_MID		(2)
-#define S_L_MAX		(3)
+#define SHRINK_L_NONE		(0)
+#define SHRINK_L_MIN		(1)
+#define SHRINK_L_MID		(2)
+#define SHRINK_L_MAX		(3)
 
 /* XXX do we want to expose the internal API? */
 

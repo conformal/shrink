@@ -47,22 +47,22 @@ The
 .Fa algorithm
 parameter delineates which compression algorithm to use.
 The following algorithms are available:
-.Bl -tag -width "S_ALG_NULL" -offset indent -compact
-.It Cm S_ALG_NULL
+.Bl -tag -width "SHRINK_ALG_NULL" -offset indent -compact
+.It Cm SHRINK_ALG_NULL
 Do not attempt to compress data.
-Simple use
+Simply use
 .Xr bcopy 3
 as the transformation algorithm.
-.It Cm S_ALG_LZO
+.It Cm SHRINK_ALG_LZO
 Use the LZO algorithm.
 LZO is optimized for speed at a compression cost.
 It typically compresses ~10% less than LZW or LZMA.
 Note: LZO is not standardized.
-.It Cm S_ALG_LZW
+.It Cm SHRINK_ALG_LZW
 LZW is the most widely used algorithm.
 It provides higher compression than LZO but can be quite a bit slower.
 The algorithm is widely adopted and the output is standardized.
-.It Cm S_ALG_LZMA
+.It Cm SHRINK_ALG_LZMA
 LZMA is considered the best compression algorithm however it is significantly
 slower than LZO or even LZW.
 It is also heavier on resources than the other two algorithms.
@@ -154,7 +154,7 @@ buffer.
 .Pp
 .Sh SEE ALSO
 This library wraps the following excellent open source libraries:
-.Bl -tag -width "S_ALG_NULL" -offset indent -compact
+.Bl -tag -width "SHRINK_ALG_NULL" -offset indent -compact
 .It Cm http://www.oberhumer.com/opensource/lzo/
 .It Cm http://www.zlib.net/
 .It Cm http://tukaani.org/xz/

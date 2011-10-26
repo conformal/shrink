@@ -168,7 +168,7 @@ test_file(void)
 	uint8_t		sha2[SHA_DIGEST_LENGTH];
 	SHA_CTX	ctx1, ctx2;
 
-	if (s_init(S_ALG_LZO, S_L_MID))
+	if (s_init(SHRINK_ALG_LZO, SHRINK_L_MID))
 		errx(1, "s_init");
 
 	/* XXX yeah yeah yeah it's a race */
@@ -309,25 +309,25 @@ main(int argc, char *argv[])
 		exit(0);
 	}
 
-	test_run(S_ALG_NULL, S_L_NONE);
+	test_run(SHRINK_ALG_NULL, SHRINK_L_NONE);
 	printf("\n");
-	test_run(S_ALG_LZO, S_L_MIN);
+	test_run(SHRINK_ALG_LZO, SHRINK_L_MIN);
 	printf("\n");
-	test_run(S_ALG_LZO, S_L_MID);
+	test_run(SHRINK_ALG_LZO, SHRINK_L_MID);
 	printf("\n");
-	test_run(S_ALG_LZO, S_L_MAX);
+	test_run(SHRINK_ALG_LZO, SHRINK_L_MAX);
 	printf("\n");
-	test_run(S_ALG_LZW, S_L_MIN);
+	test_run(SHRINK_ALG_LZW, SHRINK_L_MIN);
 	printf("\n");
-	test_run(S_ALG_LZW, S_L_MID);
+	test_run(SHRINK_ALG_LZW, SHRINK_L_MID);
 	printf("\n");
-	test_run(S_ALG_LZW, S_L_MAX);
+	test_run(SHRINK_ALG_LZW, SHRINK_L_MAX);
 	printf("\n");
-	test_run(S_ALG_LZMA, S_L_MIN);
+	test_run(SHRINK_ALG_LZMA, SHRINK_L_MIN);
 	printf("\n");
-	test_run(S_ALG_LZMA, S_L_MID);
+	test_run(SHRINK_ALG_LZMA, SHRINK_L_MID);
 	printf("\n");
-	test_run(S_ALG_LZMA, S_L_MAX);
+	test_run(SHRINK_ALG_LZMA, SHRINK_L_MAX);
 
 	return (0);
 }

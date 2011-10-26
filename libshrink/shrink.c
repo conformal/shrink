@@ -87,18 +87,18 @@ s_compress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 
 	/* sanity */
 	if (comp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (*comp_sz < len)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	bcopy(src, dst, len);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -115,18 +115,18 @@ s_decompress_null(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 
 	/* sanity */
 	if (uncomp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (*uncomp_sz < len)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	bcopy(src, dst, len);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -202,12 +202,12 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 
 	/* sanity */
 	if (comp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (*comp_sz < len)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	/*
 	 * In order to guarantee that the compressed buffer is always
@@ -216,11 +216,11 @@ s_compress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	bzero(wrkmem, sizeof(wrkmem));
 	if (s_lzo1x_compress(src, len, dst, (lzo_uintp)comp_sz,
 	    wrkmem) != LZO_E_OK)
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -235,22 +235,22 @@ s_decompress_lzo(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 
 	/* sanity */
 	if (uncomp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	/* allow for incompressible margin */
 	if (LZO_SIZE(*uncomp_sz) < len) {
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	}
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	if (lzo1x_decompress(src, len, dst, (lzo_uintp)uncomp_sz,
 	    NULL) != LZO_E_OK)
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -294,19 +294,19 @@ s_compress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 
 	/* sanity */
 	if (comp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (compressBound(*comp_sz) < len)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	if ((r = compress2(dst, (uLongf *)comp_sz, src, len, s_level)) != Z_OK)
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -321,21 +321,21 @@ s_decompress_lzw(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 
 	/* sanity */
 	if (uncomp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	/* allow for incompressible margin */
 	if (compressBound(*uncomp_sz) < len) {
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	}
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	if (uncompress(dst, (uLongf *) uncomp_sz, src, len) != Z_OK)
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -383,12 +383,12 @@ s_compress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 
 	/* sanity */
 	if (comp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (*comp_sz < len)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	lzma.next_in = src;
 	lzma.next_out = dst;
@@ -396,23 +396,23 @@ s_compress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *comp_sz,
 	lzma.avail_out = *comp_sz;
 	if (lzma_easy_encoder(&lzma, s_level, LZMA_CHECK_CRC32) != LZMA_OK) {
 		lzma_end(&lzma);
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 	}
 	if (lzma_code(&lzma, LZMA_RUN) != LZMA_OK) {
 		lzma_end(&lzma);
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 	}
 	r = lzma_code(&lzma, LZMA_FINISH);
 	if (r !=LZMA_STREAM_END && r != LZMA_OK) {
 		lzma_end(&lzma);
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 	}
 	*comp_sz = lzma.total_out;
 	lzma_end(&lzma);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -429,13 +429,13 @@ s_decompress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 
 	/* sanity */
 	if (uncomp_sz == NULL)
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	if (LZMA_SIZE(*uncomp_sz) < len) {
-		return (S_INTEGRITY);
+		return (SHRINK_INTEGRITY);
 	}
 
 	if (elapsed && gettimeofday(&start, NULL) == -1)
-		return (S_LIBC);
+		return (SHRINK_LIBC);
 
 	lzma.next_in = src;
 	lzma.next_out = dst;
@@ -444,19 +444,19 @@ s_decompress_lzma(uint8_t *src, uint8_t *dst, size_t len, size_t *uncomp_sz,
 	if ((r = lzma_auto_decoder(&lzma, lzma_easy_decoder_memusage(s_level),
 	    0)) != LZMA_OK) {
 		lzma_end(&lzma);
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 	}
 	r = lzma_code(&lzma, LZMA_RUN);
 	if (r != LZMA_STREAM_END) {
 		lzma_end(&lzma);
-		return (S_LIB_COMPRESS);
+		return (SHRINK_LIB_COMPRESS);
 	}
 	*uncomp_sz = lzma.total_out;
 	lzma_end(&lzma);
 
 	if (elapsed) {
 		if (gettimeofday(&end, NULL) == -1)
-			return (S_LIBC);
+			return (SHRINK_LIBC);
 		timersub(&end, &start, elapsed);
 	}
 
@@ -469,9 +469,9 @@ int
 s_init(int algorithm, int level)
 {
 	switch (algorithm) {
-	case S_ALG_NULL:
-		if (level != S_L_NONE)
-			return (S_INVALID);
+	case SHRINK_ALG_NULL:
+		if (level != SHRINK_L_NONE)
+			return (SHRINK_INVALID);
 
 		s_algorithm = "null";
 		s_compress = s_compress_null;
@@ -481,28 +481,28 @@ s_init(int algorithm, int level)
 		s_level = level;
 		break;
 #if defined(SUPPORT_LZO2)
-	case S_ALG_LZO:
+	case SHRINK_ALG_LZO:
 		if (lzo_init() != LZO_E_OK)
-			return (S_LIB_COMPRESS);
+			return (SHRINK_LIB_COMPRESS);
 		switch (level) {
-		case S_L_MIN:
+		case SHRINK_L_MIN:
 			s_lzo1x_compress = lzo1x_1_compress;
 			s_lzo1x_heapsz = LZO1X_1_MEM_COMPRESS;
 			s_algorithm = "lzo1x_1";
 			break;
-		case S_L_MID:
+		case SHRINK_L_MID:
 			s_lzo1x_compress = lzo1x_1_15_compress;
 			s_lzo1x_heapsz = LZO1X_1_15_MEM_COMPRESS;
 			s_algorithm = "lzo1x_1_15";
 			break;
-		case S_L_MAX:
+		case SHRINK_L_MAX:
 			s_lzo1x_compress = lzo1x_999_compress;
 			s_lzo1x_heapsz = LZO1X_999_MEM_COMPRESS;
 			s_algorithm = "lzo1x_999";
 			break;
-		case S_L_NONE:
+		case SHRINK_L_NONE:
 		default:
-			return (S_INVALID);
+			return (SHRINK_INVALID);
 		}
 		s_compress = s_compress_lzo;
 		s_decompress = s_decompress_lzo;
@@ -512,23 +512,23 @@ s_init(int algorithm, int level)
 		break;
 #endif /* SUPPORT_LZO2 */
 #if defined(SUPPORT_LZW)
-	case S_ALG_LZW:
+	case SHRINK_ALG_LZW:
 		switch (level) {
-		case S_L_MIN:
+		case SHRINK_L_MIN:
 			s_algorithm = "lzw_1";
 			s_level = 1;
 			break;
-		case S_L_MID:
+		case SHRINK_L_MID:
 			s_algorithm = "lzw_6";
 			s_level = 6; /* default */
 			break;
-		case S_L_MAX:
+		case SHRINK_L_MAX:
 			s_algorithm = "lzw_9";
 			s_level = 9;
 			break;
-		case S_L_NONE:
+		case SHRINK_L_NONE:
 		default:
-			return (S_INVALID);
+			return (SHRINK_INVALID);
 		}
 		s_compress = s_compress_lzw;
 		s_decompress = s_decompress_lzw;
@@ -537,23 +537,23 @@ s_init(int algorithm, int level)
 		break;
 #endif /* SUPPORT_LZW */
 #if defined(SUPPORT_LZMA)
-	case S_ALG_LZMA:
+	case SHRINK_ALG_LZMA:
 		switch (level) {
-		case S_L_MIN:
+		case SHRINK_L_MIN:
 			s_algorithm = "lzma_0";
 			s_level = 0;
 			break;
-		case S_L_MID:
+		case SHRINK_L_MID:
 			s_algorithm = "lzma_6";
 			s_level = 5;
 			break;
-		case S_L_MAX:
+		case SHRINK_L_MAX:
 			s_algorithm = "lzma_9";
 			s_level = 9;
 			break;
-		case S_L_NONE:
+		case SHRINK_L_NONE:
 		default:
-			return (S_INVALID);
+			return (SHRINK_INVALID);
 		}
 		s_compress = s_compress_lzma;
 		s_decompress = s_decompress_lzma;
@@ -563,7 +563,7 @@ s_init(int algorithm, int level)
 		break;
 #endif /* SUPPORT_LZMA */
 	default:
-		return (S_INVALID);
+		return (SHRINK_INVALID);
 	}
 
 	return (SHRINK_OK);

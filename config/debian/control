@@ -10,7 +10,7 @@ Package: libshrink-dev
 Section: libdevel
 Architecture: any
 Depends: libclens-dev (>= 0.0.5), liblzo2-dev (>= 2.03), liblzma-dev, zlib1g-dev,
-         libshrink1 (= ${binary:Version})
+         libshrink2 (= ${binary:Version})
 Description: Library that provides a single API into compression algorithms - development
  This package contains the libraries, include files, and documentation
  to develop applications with shrink.
@@ -24,7 +24,7 @@ Description: Library that provides a single API into compression algorithms - de
  of using any compression/decompression algorithm without having to understand
  the intricate parts.
 
-Package: libshrink1
+Package: libshrink2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
