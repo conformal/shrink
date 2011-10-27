@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.2.3
+%define version		0.3.0
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,11 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Thu Oct 27 2011 - davec 0.3.0-1
+- Convert all S_* constants to SHRINK_* to prevent conflicts
+- Makefile improvements
+- Add build versioning
+- Other minor cleanup
 * Mon Aug 15 2011 - davec 0.2.3-1
 - Explicity link shared lib deps
 * Tue Jul 26 2011 - davec 0.2.2-1
