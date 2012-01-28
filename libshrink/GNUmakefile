@@ -33,17 +33,17 @@ SO_MINOR = $(minor)
 # must be after Makefile.inc is included
 ifdef SUPPORT_LZW
 CPPFLAGS += -DSUPPORT_LZW
-LDFLAGS += -lz
+LDLIBS += -lz
 endif
 
 ifdef SUPPORT_LZO2
 CPPFLAGS += -DSUPPORT_LZO2
-LDFLAGS += -llzo2
+LDLIBS += -llzo2
 endif
 
 ifdef SUPPORT_LZMA
 CPPFLAGS += -DSUPPORT_LZMA
-LDFLAGS += -llzma
+LDLIBS += -llzma
 endif
 
 # System utils.
@@ -77,6 +77,7 @@ ifneq "$(LIB.OBJS)" "$(LIB.SOBJS)"
 endif
 LIB.MDIRS = $(foreach page, $(LIB.MANPAGES), $(subst ., man, $(suffix $(page))))
 LIB.LDFLAGS = $(LDFLAGS.EXTRA) $(LDFLAGS)
+LIB.LDLIBS = $(LDLIBS) ${LDADD}
 
 all: $(OBJPREFIX)$(LIB.SHARED) $(OBJPREFIX)$(LIB.STATIC)
 
@@ -84,7 +85,7 @@ obj:
 	-$(MKDIR) obj
 
 $(OBJPREFIX)$(LIB.SHARED): $(LIB.SOBJS)
-	$(CC) $(LDFLAGS.SO) $^ $(LIB.LDFLAGS) -o $@
+	$(CC) $(LDFLAGS.SO) $(LIB.LDFLAGS) -o $@ $^ $(LIB.LDLIBS)
 
 $(OBJPREFIX)$(LIB.STATIC): $(LIB.OBJS)
 	$(AR) $(ARFLAGS) $@ $^

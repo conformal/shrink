@@ -46,15 +46,15 @@ INCFLAGS += -I ../libshrink -I $(INCDIR)/clens -I $(LOCALBASE)/ssl/include
 WARNFLAGS ?= -Wall -Werror
 DEBUG += -g
 CFLAGS += $(INCFLAGS) $(WARNFLAGS) $(DEBUG)
-LDFLAGS += -L$(LOCALBASE)/ssl/lib
-LDFLAGS += -L../libshrink/obj -L../libshrink -lshrink -lclens -lbsd
-LDFLAGS += -Wl,-Bstatic -lssl -lcrypto -Wl,-Bdynamic -ldl
+LDLIBS += -L../libshrink/obj -L../libshrink -lshrink -lclens
+LDLIBS += ${LIB.LINKSTATIC} -lssl -lcrypto ${LIB.LINKDYNAMIC} -ldl
 
 BIN.NAME = shrink
 BIN.SRCS = shrink.c
 BIN.OBJS = $(addprefix $(OBJPREFIX), $(BIN.SRCS:.c=.o))
 BIN.DEPS = $(addsuffix .depend, $(BIN.OBJS))
-BIN.LDFLAGS = $(LDFLAGS.EXTRA) $(LDFLAGS) $(LDADD)
+BIN.LDFLAGS = $(LDFLAGS.EXTRA) $(LDFLAGS)
+BIN.LDLIBS = $(LDLIBS) $(LDADD)
 
 all: $(OBJPREFIX)$(BIN.NAME)
 
@@ -62,8 +62,7 @@ obj:
 	-$(MKDIR) obj
 
 $(OBJPREFIX)$(BIN.NAME): $(BIN.OBJS)
-	$(CC) $^ $(BIN.LDFLAGS) -o $@
-
+	$(CC) $(BIN.LDFLAGS) -o $@ $^ $(BIN.LDLIBS)
 
 $(OBJPREFIX)%.o: %.c
 	@echo "Generating $@.depend"
