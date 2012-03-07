@@ -1,0 +1,13 @@
+--- shrink/Makefile.orig	2011-10-27 18:24:20.000000000 -0500
++++ shrink/Makefile	2012-03-06 01:42:37.000000000 -0600
+@@ -4,8 +4,8 @@ SYSTEM != uname -s
+ .endif
+ 
+ LOCALBASE?=/usr/local
+-BINDIR?=${LOCALBASE}/bin
+-INCDIR?=${LOCALBASE}/include
++BINDIR=${LOCALBASE}/bin
++INCDIR=${LOCALBASE}/include
+ 
+ PROG= shrink
+ NOMAN=

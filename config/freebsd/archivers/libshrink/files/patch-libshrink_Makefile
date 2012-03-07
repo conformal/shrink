@@ -1,0 +1,13 @@
+--- libshrink/Makefile.orig	2011-10-27 18:24:20.000000000 -0500
++++ libshrink/Makefile	2012-03-06 01:42:27.000000000 -0600
+@@ -4,8 +4,8 @@ SYSTEM != uname -s
+ .endif
+ 
+ LOCALBASE?=/usr/local
+-BINDIR?=${LOCALBASE}/bin
+-LIBDIR?=${LOCALBASE}/lib
++BINDIR=${LOCALBASE}/bin
++LIBDIR=${LOCALBASE}/lib
+ INCDIR=${LOCALBASE}/include
+ 
+ #WANTLINT=

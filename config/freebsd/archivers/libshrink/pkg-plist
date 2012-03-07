@@ -1,0 +1,7 @@
+lib/libshrink.a
+lib/libshrink_p.a
+lib/libshrink.so.2
+lib/libshrink.so
+man/man3/shrink.3.gz
+include/shrink.h
+bin/shrink
