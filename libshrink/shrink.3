@@ -22,16 +22,20 @@
 .Nd compression wrapper
 .Sh SYNOPSIS
 .Fd #include <shrink.h>
-.Ft int
-.Fn s_init "int algorithm" "int level"
+.Ft struct shrink_ctx *
+.Fn shrink_init "int algorithm" "int level"
+.Ft void
+.Fn shrink_cleanup "void"
 .Ft size_t
-.Fn s_compress_bounds "size_t blocksize"
+.Fn shrink_compress_bounds "struct shrink_ctx *ctx" "size_t blocksize"
 .Ft void *
-.Fn s_malloc "size_t blocksize"
+.Fn shrink_malloc "struct shrink_ctx *ctx" "size_t blocksize"
 .Ft int
-.Fn s_compress "uint8_t *src" "uint8_t *dst" "size_t slen" "size_t *comp_sz" "struct timeval *elapsed"
+.Fn shrink_compress "struct shrink_ctx *ctx" "uint8_t *src" "uint8_t *dst" "size_t slen" "size_t *comp_sz" "struct timeval *elapsed"
 .Ft int
-.Fn s_decompress "uint8_t *src" "uint8_t *dst" "size_t slen" "size_t *uncomp_sz" "struct timeval *elapsed"
+.Fn shrink_decompress "struct shrink_ctx *ctx" "uint8_t *src" "uint8_t *dst" "size_t slen" "size_t *uncomp_sz" "struct timeval *elapsed"
+.Ft const char *
+.Fn shrink_get_algorithm "struct shrink_ctx *"
 .Sh DESCRIPTION
 The
 .Nm
@@ -39,9 +43,13 @@ library provides a single API into several compression algorithms.
 It enables developers to easily add compression and decompression functionality
 to an existing code base.
 .Pp
-.Fn s_init
+.Fn shrink_init
 prepares the library for first use.
 This function shall be called before any other function is called.
+The context pointer returned by this function should be passed to all other
+shrink calls.
+.Fn shrink_cleanup
+may be called after all work is done to deallocate any resources.
 .Pp
 The
 .Fa algorithm
@@ -74,7 +82,7 @@ Please use the accompanied
 binary to get an idea how the algorithms perform in the best and worst case
 scenarios.
 .Pp
-.Fn s_compress_bounds
+.Fn shrink_compress_bounds
 is a helper function to help determine how much memory a compressed
 (destination) buffer might require.
 This value can be higher than the source buffer size for incompressible data.
@@ -82,15 +90,15 @@ The function will return a value based on the
 .Fa blocksize
 parameter.
 .Pp
-.Fn s_malloc
+.Fn shrink_malloc
 is identical to the
 .Xr malloc 3
 call but it handles the
-.Fn s_compress_bounds
+.Fn shrink_compress_bounds
 sizes automatically.
 This means that the allocated buffer is larger than the requested size.
 .Pp
-.Fn s_compress
+.Fn shrink_compress
 compresses
 .Fa src
 buffer into
@@ -102,7 +110,7 @@ parameter holds the
 .Fa src
 buffer size.
 Prior to calling
-.Fn s_compress
+.Fn shrink_compress
 the
 .Fa comp_sz
 parameter must be set to the maximum compressible
@@ -110,7 +118,7 @@ parameter must be set to the maximum compressible
 This
 .Fa blocksize
 can be determined by calling
-.Fn s_compress_bounds .
+.Fn shrink_compress_bounds .
 .Pp
 On success the function returns
 .Fa SHRINK_OK
@@ -124,9 +132,9 @@ that contains the time it took to compress the
 .Fa src
 buffer.
 .Pp
-.Fn s_decompress
+.Fn shrink_decompress
 is analogous to
-.Fn s_compress .
+.Fn shrink_compress .
 It decompresses
 .Fa src
 into
@@ -137,7 +145,7 @@ parameter holds the size of the
 .Fa src
 buffer.
 Prior to calling
-.Fn s_decompress
+.Fn shrink_decompress
 the
 .Fa uncomp_sz
 parameter must be set to the maximum
@@ -151,6 +159,11 @@ is set it will return a
 that contains the time it took to decompress the
 .Fa src
 buffer.
+.Pp
+The
+.Fn shrink_get_algorithm
+function may be called to obtain a character string with the currently in
+use compression algorithm.
 .Sh SEE ALSO
 This library wraps the following excellent open source libraries:
 .Bl -tag -width "SHRINK_ALG_NULL" -offset indent -compact

@@ -83,6 +83,7 @@ print_size(char *s, size_t sz)
 void
 test_run(int algo, int level)
 {
+	struct shrink_ctx	*ctx;
 	struct timeval		elapsed, tot_comp, tot_uncomp;
 	uint8_t			*s = NULL, *d = NULL, *uncomp = NULL;
 	size_t			tot_comp_sz = 0, tot_uncomp_sz = 0, dsz;
@@ -92,8 +93,8 @@ test_run(int algo, int level)
 	timerclear(&tot_comp);
 	timerclear(&tot_uncomp);
 
-	if (s_init(algo, level)) {
-		warnx("s_init algorithm %d not supported", algo);
+	if ((ctx = shrink_init(algo, level)) == NULL) {
+		warnx("shrink_init algorithm %d not supported", algo);
 		return;
 	}
 
@@ -101,7 +102,7 @@ test_run(int algo, int level)
 	if (s == NULL)
 		err(1, "malloc s");
 	dsz = bs;
-	d = s_malloc(&dsz);
+	d = shrink_malloc(ctx, &dsz);
 	if (d == NULL)
 		err(1, "malloc d");
 	uncomp = malloc(bs);
@@ -116,8 +117,8 @@ test_run(int algo, int level)
 
 		/* compress */
 		comp_sz = dsz;
-		if (s_compress(s, d, bs, &comp_sz, &elapsed)) {
-			warnx("s_compress failed");
+		if (shrink_compress(ctx, s, d, bs, &comp_sz, &elapsed)) {
+			warnx("shrink_compress failed");
 			errx(1, "boing");
 			restart = 1;
 		}
@@ -131,8 +132,9 @@ test_run(int algo, int level)
 
 		/* decompress */
 		uncomp_sz = bs;
-		if (s_decompress(d, uncomp, comp_sz, &uncomp_sz, &elapsed))
-			errx(1, "s_decompress");
+		if (shrink_decompress(ctx, d, uncomp, comp_sz, &uncomp_sz,
+		    &elapsed))
+			errx(1, "shrink_decompress");
 		timeradd(&elapsed, &tot_uncomp, &tot_uncomp);
 		tot_uncomp_sz += uncomp_sz;
 
@@ -141,8 +143,10 @@ test_run(int algo, int level)
 			errx(1, "data corruption");
 	}
 
-	printf           ("algorithm                    : %12s\n", s_algorithm);
-	printf           ("compression bounds           : %12zd\n",s_compress_bounds(bs));
+	printf           ("algorithm                    : %12s\n",
+	    shrink_get_algorithm(ctx));
+	printf           ("compression bounds           : %12zd\n",
+	    shrink_compress_bounds(ctx, bs));
 	print_size       ("data size                    : ", bs * count);
 	print_size       ("size compressed              : ", tot_comp_sz);
 	print_time_scaled("compression                  : ", &tot_comp);
@@ -153,23 +157,25 @@ test_run(int algo, int level)
 	free(s);
 	free(d);
 	free(uncomp);
+	shrink_cleanup(ctx);
 }
 
 void
 test_file(void)
 {
-	int		i;
-	FILE		*f;
-	struct stat	sb;
-	uint8_t		*s1, *s2, *c1, *c2, *d1, *d2;
-	size_t		c1sz, c2sz, comp_sz1, comp_sz2;
-	size_t		uncomp_sz1, uncomp_sz2;
-	uint8_t		sha1[SHA_DIGEST_LENGTH];
-	uint8_t		sha2[SHA_DIGEST_LENGTH];
-	SHA_CTX	ctx1, ctx2;
+	struct shrink_ctx	*ctx;
+	int			i;
+	FILE			*f;
+	struct stat		sb;
+	uint8_t			*s1, *s2, *c1, *c2, *d1, *d2;
+	size_t			c1sz, c2sz, comp_sz1, comp_sz2;
+	size_t			uncomp_sz1, uncomp_sz2;
+	uint8_t			sha1[SHA_DIGEST_LENGTH];
+	uint8_t			sha2[SHA_DIGEST_LENGTH];
+	SHA_CTX			ctx1, ctx2;
 
-	if (s_init(SHRINK_ALG_LZO, SHRINK_L_MID))
-		errx(1, "s_init");
+	if ((ctx = shrink_init(SHRINK_ALG_LZO, SHRINK_L_MID)) == NULL)
+		errx(1, "shrink_init");
 
 	/* XXX yeah yeah yeah it's a race */
 	if (stat(filename, &sb))
@@ -184,11 +190,11 @@ test_file(void)
 		if (s2 == NULL)
 			err(1, "malloc");
 		c1sz = sb.st_size;
-		c1 = s_malloc(&c1sz);
+		c1 = shrink_malloc(ctx, &c1sz);
 		if (c1 == NULL)
 			err(1, "malloc");
 		c2sz = sb.st_size;
-		c2 = s_malloc(&c2sz);
+		c2 = shrink_malloc(ctx, &c2sz);
 		if (c2 == NULL)
 			err(1, "malloc");
 		d1 = malloc(sb.st_size);
@@ -208,11 +214,12 @@ test_file(void)
 		if (fread(s1, 1, sb.st_size, f) != sb.st_size)
 			err(1, "fread");
 		comp_sz1 = c1sz;
-		if (s_compress(s1, c1, sb.st_size, &comp_sz1, NULL))
-			errx(1, "s_compress failed 1");
+		if (shrink_compress(ctx, s1, c1, sb.st_size, &comp_sz1, NULL))
+			errx(1, "shrink_compress failed 1");
 		uncomp_sz1 = sb.st_size;
-		if (s_decompress(c1, d1, comp_sz1, &uncomp_sz1, NULL))
-			errx(1, "s_decompress 1");
+		if (shrink_decompress(ctx, c1, d1, comp_sz1, &uncomp_sz1,
+		    NULL))
+			errx(1, "shrink_decompress 1");
 		fclose(f);
 		SHA1_Init(&ctx1);
 		SHA1_Update(&ctx1, c1, comp_sz1);
@@ -228,11 +235,11 @@ test_file(void)
 		if (fread(s2, 1, sb.st_size, f) != sb.st_size)
 			err(1, "fread");
 		comp_sz2 = c2sz;
-		if (s_compress(s2, c2, sb.st_size, &comp_sz2, NULL))
-			errx(1, "s_compress failed 2");
+		if (shrink_compress(ctx, s2, c2, sb.st_size, &comp_sz2, NULL))
+			errx(1, "shrink_compress failed 2");
 		uncomp_sz2 = sb.st_size;
-		if (s_decompress(c2, d2, comp_sz2, &uncomp_sz2, NULL))
-			errx(1, "s_decompress 2");
+		if (shrink_decompress(ctx, c2, d2, comp_sz2, &uncomp_sz2, NULL))
+			errx(1, "shrink_decompress 2");
 		fclose(f);
 		SHA1_Init(&ctx2);
 		SHA1_Update(&ctx2, c2, comp_sz2);
@@ -274,6 +281,7 @@ test_file(void)
 		free(s1);
 		free(s2);
 	}
+	shrink_cleanup(ctx);
 }
 
 int
