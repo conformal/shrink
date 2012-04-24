@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.3.0
+%define version		0.4.0
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,9 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Tue Apr 24 2012 - drahn 0.4.0-1
+- Cleanup manpage
+- Other minor cleanup and bug fixes
 * Thu Oct 27 2011 - davec 0.3.0-1
 - Convert all S_* constants to SHRINK_* to prevent conflicts
 - Makefile improvements
