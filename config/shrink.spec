@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.4.0
+%define version		0.5.0
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,9 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Tue May 08 2012 - drahn 0.5.0-1
+- Allow use of shrink in a threaded environment
+- Not ABI compatible, but API compat layer added
 * Tue Apr 24 2012 - drahn 0.4.0-1
 - Cleanup manpage
 - Other minor cleanup and bug fixes

@@ -1,3 +1,10 @@
+shrink (0.5.0-1) unstable; urgency=low
+
+  * Allow use of shrink in a threaded environment
+  * Not ABI compatible, but API compat layer added
+
+ -- Conformal Systems <package-discuss@conformal.com>  Tue, 08 May 2012 13:08:42 -0500
+
 shrink (0.4.0-1) unstable; urgency=low
 
   * Cleanup manpage
