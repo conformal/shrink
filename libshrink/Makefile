@@ -17,7 +17,7 @@ MAN=  shrink.3
 BUILDVERSION != sh "${.CURDIR}/../buildver.sh"
 
 CFLAGS+= -Wall -Werror
-CFLAGS+= -ggdb3
+CFLAGS+= -g
 CFLAGS+= -I${.CURDIR} -I${INCDIR}
 .if !${BUILDVERSION} == ""
 CPPFLAGS+= -DBUILDSTR=\"$(BUILDVERSION)\"

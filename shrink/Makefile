@@ -21,7 +21,7 @@ LDADD+=	-L${.OBJDIR}/../libshrink
 
 SRCS= shrink.c
 COPT+= -O2
-CFLAGS+= -Wall -Werror -ggdb3
+CFLAGS+= -Wall -Werror -g
 LDADD+= -lutil -lssl -lcrypto -L${LOCALBASE}/lib -lshrink
 
 CFLAGS+= -I${.CURDIR}/../libshrink -I.
