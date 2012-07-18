@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.5.0
+%define version		0.5.1
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,8 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Tue Jul 17 2012 - davec 0.5.1-1
+- Support clang builds
 * Tue May 08 2012 - drahn 0.5.0-1
 - Allow use of shrink in a threaded environment
 - Not ABI compatible, but API compat layer added

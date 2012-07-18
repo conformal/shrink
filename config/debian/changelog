@@ -1,3 +1,9 @@
+shrink (0.5.1-1) unstable; urgency=low
+
+  * Support clang builds
+
+ -- Conformal Systems <package-discuss@conformal.com>  Tue, 17 Jul 2012 20:02:26 -0500
+
 shrink (0.5.0-1) unstable; urgency=low
 
   * Allow use of shrink in a threaded environment
