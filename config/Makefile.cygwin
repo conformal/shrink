@@ -1,0 +1,15 @@
+ARFLAGS = crs
+
+LIB.SONAME = lib$(LIB.NAME).so.$(SO_MAJOR)
+LIB.SHARED = cyg$(LIB.NAME)-$(SO_MAJOR).dll
+LIB.DEVLNK = lib$(LIB.NAME).dll.a
+LIB.STATIC = lib$(LIB.NAME).a
+LIB.LINKSTATIC = -Wl,-Bstatic
+LIB.LINKDYNAMIC = -Wl,-Bdynamic
+
+LDLIBS += -L$(LOCALBASE)/ssl/lib
+LDADD += -lbsd
+CPPFLAGS += -D_GNU_SOURCE
+LDFLAGS.SO = -shared -Wl,--out-implib,$(OBJPREFIX)$(LIB.DEVLNK)
+LDFLAGS.EXTRA += -L$(LOCALBASE)/lib
+SHARED_OBJ_EXT = o
