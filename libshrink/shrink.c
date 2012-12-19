@@ -34,9 +34,9 @@
 #include <shrink.h>
 
 #ifdef BUILDSTR
-static const char *vertag = "version: " SHRINK_VERSION " " BUILDSTR;
+static const char *vertag = SHRINK_VERSION " " BUILDSTR;
 #else
-static const char *vertag = "version: " SHRINK_VERSION;
+static const char *vertag = SHRINK_VERSION;
 #endif
 
 struct shrink_ctx {
@@ -483,7 +483,7 @@ s_init(int algorithm, int level)
 	internal_ctx = shrink_init(algorithm, level);
 
 	return (internal_ctx ? SHRINK_OK : SHRINK_INVALID);
-	
+
 }
 
 int
