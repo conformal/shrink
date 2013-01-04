@@ -4,5 +4,4 @@
 include/shrink.h
 lib/libshrink.a
 lib/libshrink_p.a
-%%no_mips64%%
 @man man/man3/shrink.3
