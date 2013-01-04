@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.5.1
+%define version		0.5.2
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,10 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Fri Jan 04 2013 - davec 0.5.2-1
+- Add support for Bitrig
+- Add support for cygwin
+- Remove the 'version: ' prefix from shrink_verstring
 * Tue Jul 17 2012 - davec 0.5.1-1
 - Support clang builds
 * Tue May 08 2012 - drahn 0.5.0-1

@@ -2,7 +2,7 @@
 
 COMMENT=	compression wrapper library
 
-DISTNAME=	shrink-0.5.1
+DISTNAME=	shrink-0.5.2
 PKGNAME=	lib${DISTNAME}
 CATEGORIES=    	archivers devel
 SHARED_LIBS=	shrink	3.0
