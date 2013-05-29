@@ -3,6 +3,7 @@
 COMMENT=	compression wrapper library
 
 DISTNAME=	shrink-0.5.2
+EPOCH=		0
 PKGNAME=	lib${DISTNAME}
 CATEGORIES=    	archivers devel
 SHARED_LIBS=	shrink	3.0
@@ -16,13 +17,10 @@ WANTLIB=	c crypto lzma lzo2 ssl util z
 LIB_DEPENDS=	archivers/lzo2 \
 		archivers/xz
 
-NO_REGRESS=	Yes
+NO_TEST=	Yes
 
 # ISC
 PERMIT_PACKAGE_CDROM=	Yes
-PERMIT_PACKAGE_FTP=	Yes
-PERMIT_DISTFILES_CDROM=	Yes
-PERMIT_DISTFILES_FTP=	Yes
 
 FAKE_FLAGS=	MANDIR=${PREFIX}/man/man
 
