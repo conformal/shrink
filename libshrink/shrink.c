@@ -287,7 +287,7 @@ shrink_init(int algorithm, int level)
 #if defined(SUPPORT_LZO2)
 	case SHRINK_ALG_LZO:
 		if (lzo_init() != LZO_E_OK)
-			return (NULL);
+			goto fail;
 		switch (level) {
 		case SHRINK_L_MIN:
 			ctx->s_lzo1x_compress = lzo1x_1_compress;
