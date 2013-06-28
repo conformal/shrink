@@ -1,3 +1,9 @@
+shrink (0.5.4-1) unstable; urgency=low
+
+  * Plug memory leak on init failure
+
+ -- Conformal Systems <package-discuss@conformal.com>  Fri, 28 Jun 2013 14:32:01 -0400
+
 shrink (0.5.3-1) unstable; urgency=low
 
   * Fix OpenBSD port Makefile for modern OpenBSD ports

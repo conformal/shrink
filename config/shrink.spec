@@ -1,5 +1,5 @@
 %define name		shrink
-%define version		0.5.3
+%define version		0.5.4
 %define release		1
 
 Name: 		%{name}
@@ -60,6 +60,8 @@ develop applications with shrink.
 /usr/lib/libshrink.a
 
 %changelog
+* Fri Jun 28 2013 - dhill 0.5.4-1
+- Plug memory leak on init failure
 * Fri May 31 2013 - davec 0.5.3-1
 - Fix OpenBSD port Makefile for modern OpenBSD ports
 * Fri Jan 04 2013 - davec 0.5.2-1
