@@ -1,9 +1,6 @@
 shrink
 ======
 
-[![Build Status](https://travis-ci.org/conformal/shrink.png?branch=master)]
-(https://travis-ci.org/conformal/shrink)
-
 The shrink library provides a single API into several compression
 algorithms. It enables developers to easily add compression and
 decompression functionality to an existing code base. Currently it
