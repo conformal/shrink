@@ -1,7 +1,13 @@
 ARFLAGS = crs
+
+#For MacPorts
+INCFLAGS+= -I/opt/local/include
+
 INCFLAGS+= -I /usr/local/include/clens
 
-LDFLAGS.EXTRA +=
+#For MacPorts
+LDFLAGS.EXTRA += -L/opt/local/lib
+
 LDFLAGS.SO = -dynamiclib
 
 LIB.SONAME = lib$(LIB.NAME).$(SO_MAJOR).dylib
