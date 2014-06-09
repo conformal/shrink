@@ -1,14 +1,15 @@
 Source: shrink
 Priority: optional
 Maintainer: Conformal Systems LLC <package-discuss@conformal.com>
-Build-Depends: debhelper (>= 7), libc6-dev, locales
-Standards-Version: 3.8.3
+Build-Depends: debhelper (>= 9), libclens-dev, liblzo2-dev, liblzma-dev, zlib1g-dev, libssl-dev
+Standards-Version: 3.9.5
 Section: libs
 Homepage: http://opensource.conformal.com/wiki/shrink
 
 Package: libshrink-dev
 Section: libdevel
 Architecture: any
+Multi-Arch: same
 Depends: libclens-dev (>= 0.0.5), liblzo2-dev (>= 2.03), liblzma-dev, zlib1g-dev,
          libshrink3 (= ${binary:Version})
 Description: Library that provides a single API into compression algorithms - development
@@ -25,8 +26,9 @@ Description: Library that provides a single API into compression algorithms - de
  the intricate parts.
 
 Package: libshrink3
-Section: libs
 Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Library that provides a single API into compression algorithms - runtime
  This package contains the runtime, shared library of shrink.
